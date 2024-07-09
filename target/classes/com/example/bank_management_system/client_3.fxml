@@ -32,13 +32,13 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label alignment="CENTER" text="Label" />
-                  <Label text="Label" GridPane.rowIndex="1" />
-                  <Label text="Label" GridPane.rowIndex="2" />
-                  <Label text="Label" GridPane.rowIndex="3" />
+                  <Label fx:id="client_3_history_1" alignment="CENTER" text="Label" />
+                  <Label fx:id="client_3_history_2" text="Label" GridPane.rowIndex="1" />
+                  <Label fx:id="client_3_history_3" text="Label" GridPane.rowIndex="2" />
+                  <Label fx:id="client_3_history_4" text="Label" GridPane.rowIndex="3" />
                </children>
             </GridPane>
-            <Button layoutX="356.0" layoutY="263.0" mnemonicParsing="false" text="Suspend" />
+            <Button fx:id="active_client_3" layoutX="356.0" layoutY="263.0" mnemonicParsing="false" onAction="#onactive_client_3Click" text="Suspend" />
          </children>
       </AnchorPane>
    </children>

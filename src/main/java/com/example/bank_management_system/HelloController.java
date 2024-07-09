@@ -19,11 +19,6 @@ public class HelloController {
     private Scene scene;
     private Parent root;
 
-    @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
-    }
-
     public void onClient_1_viewClick(ActionEvent actionEvent) throws IOException {
         root = FXMLLoader.load(getClass().getResource("client_1.fxml"));
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -85,5 +80,17 @@ public class HelloController {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void onactive_client_1Click(ActionEvent actionEvent) {
+    }
+
+    public void onactive_client_2Click(ActionEvent actionEvent) {
+    }
+
+    public void onactive_client_3Click(ActionEvent actionEvent) {
+    }
+
+    public void onactive_client_4Click(ActionEvent actionEvent) {
     }
 }
