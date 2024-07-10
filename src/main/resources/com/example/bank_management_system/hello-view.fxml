@@ -17,7 +17,7 @@
          <Button fx:id="client_4_view" layoutX="354.0" layoutY="153.0" mnemonicParsing="false" onAction="#onclient_4_viewClick" text="view" />
          <Button fx:id="client_3_view" layoutX="354.0" layoutY="120.0" mnemonicParsing="false" onAction="#onclient_3_viewClick" text="view" />
          <Button fx:id="client_2_view" layoutX="354.0" layoutY="84.0" mnemonicParsing="false" onAction="#onclient_2_viewClick" text="view" />
-         <Button fx:id="client_1_view" alignment="CENTER_RIGHT" layoutX="354.0" layoutY="51.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onClient_1_viewClick" text="view" />
+         <Button fx:id="client_1_view" layoutX="354.0" layoutY="51.0" mnemonicParsing="false" onAction="#onClient_1_viewClick" text="view" />
          <Label fx:id="client_4" layoutX="31.0" layoutY="157.0" text="Label" />
          <Label fx:id="client_3" layoutX="31.0" layoutY="124.0" text="Label" />
          <Label fx:id="client_2" layoutX="31.0" layoutY="88.0" text="Label" />
