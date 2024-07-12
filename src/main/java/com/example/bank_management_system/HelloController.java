@@ -1,5 +1,9 @@
 package com.example.bank_management_system;
 
+import com.example.bank_management_system.TransactionHistoryController.Transaction; // Ensure correct import
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,197 +12,155 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class HelloController {
     @FXML
-    public Button client_4_view;
-    @FXML
-    public Button client_3_view;
-    @FXML
-    public Button client_2_view;
-    @FXML
-    public Button client_1_view;
-    public Label client_1_name;
-    public Button client_1_back;
-    public Label client_1_history_1;
-    public Label client_1_history_2;
-    public Label client_1_history_3;
-    public Label client_1_history_4;
-    public Label client_2_name;
-    public Button client_2_back;
-    public Label client_2_history_1;
-    public Label client_2_history_2;
-    public Label client_2_history_3;
-    public Label client_2_history_4;
-    public Button active_client_2;
-    public Button active_client_1;
-    public Label client_3_name;
-    public Button client_3_back;
-    public Label client_3_history_1;
-    public Label client_3_history_2;
-    public Label client_3_history_3;
-    public Label client_3_history_4;
-    public Button active_client_3;
-    public Label client_4_name;
-    public Button client_4_back;
-    public Label client_4_history_1;
-    public Label client_4_history_2;
-    public Label client_4_history_3;
-    public Label client_4_history_4;
-    public Button active_client_4;
-    @FXML
-    private Label client_1;
-    @FXML
-    private Label client_2;
-    @FXML
-    private Label client_3;
-    @FXML
-    private Label client_4;
-    @FXML
-    private Label status_client_1;
-    @FXML
-    private Label status_client_2;
-    @FXML
-    private Label status_client_3;
-    @FXML
-    private Label status_client_4;
+    private AnchorPane clientPane;
 
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
+    private final List<Client> clients = new ArrayList<>();
+    private int numColumns = 0;
 
-    String[] clientUsernames = new String[4];
-    String[] clientStatuses = new String[4];
+    public class Client {
+        String username;
+        String status;
+        int accountNumber;
+        List<Transaction> transactions; // List of transactions
+
+        public Client(String username, String status, int accountNumber, List<Transaction> transactions) {
+            this.username = username;
+            this.status = status;
+            this.accountNumber = accountNumber;
+            this.transactions = transactions;
+        }
+
+        public List<Transaction> getTransactions() {
+            return transactions;
+        }
+
+        public int getAccountNumber() {
+            return accountNumber;
+        }
+    }
 
     @FXML
     public void initialize() {
-        String filePath = "src/main/resources/bank_database.csv";
+        loadClients();
+        loadTransactions();
+
+        // Debug: Print number of clients read
+        System.out.println("Number of clients read: " + clients.size());
+        System.out.println("Number of columns per client: " + numColumns);
+
+        // Dynamically create UI elements based on the number of clients
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
+            Label nameLabel = new Label(client.username);
+            nameLabel.setLayoutX(31.0);
+            nameLabel.setLayoutY(55.0 + i * 33.0);
+            Label statusLabel = new Label(client.status);
+            statusLabel.setLayoutX(235.0);
+            statusLabel.setLayoutY(55.0 + i * 33.0);
+            Button viewButton = new Button("view");
+            viewButton.setLayoutX(354.0);
+            viewButton.setLayoutY(51.0 + i * 33.0);
+            final int clientIndex = i;
+            viewButton.setOnAction(event -> onViewClick(event, clientIndex));
+
+            clientPane.getChildren().addAll(nameLabel, statusLabel, viewButton);
+        }
+
+        // Adjust AnchorPane height based on the number of clients
+        double newHeight = 55.0 + clients.size() * 33.0 + 20.0; // Adding extra space
+        clientPane.setPrefHeight(newHeight);
+    }
+
+    private void loadClients() {
+        String filePath = "src/main/resources/com/example/bank_management_system/bank_database.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            int index = 0;
-            while ((line = br.readLine()) != null && index < 4) {
+            while ((line = br.readLine()) != null) {
                 System.out.println("Reading line: " + line); // Debug statement
                 String[] values = line.split(",");
+                // Determine the number of columns in the first data line
+                if (numColumns == 0 && values.length >= 4 && "Client".equalsIgnoreCase(values[0])) {
+                    numColumns = values.length;
+                }
                 if (values.length >= 4 && "Client".equalsIgnoreCase(values[0])) {
-                    clientUsernames[index] = values[1]; // Add username to array
-                    clientStatuses[index] = values[3]; // Add status to array
-                    System.out.println("Added username: " + values[1] + ", status: " + values[3]); // Debug statement
-                    index++;
+                    int accountNumber = Integer.parseInt(values[1].trim());
+                    clients.add(new Client(values[2], values[4], accountNumber, new ArrayList<>()));
+                    System.out.println("Added client: " + values[2] + ", status: " + values[4]); // Debug statement
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-        System.out.println("Client Usernames: " + String.join(", ", clientUsernames));
-        System.out.println("Client Statuses: " + String.join(", ", clientStatuses));
+    private void loadTransactions() {
+        String filePath = "src/main/resources/com/example/bank_management_system/bank_database.csv";
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values.length >= 5 && "Client".equalsIgnoreCase(values[0])) {
+                    int accountNumber = Integer.parseInt(values[1].trim());
 
-        if (clientUsernames[0] == null) {
-            client_1.setText(clientUsernames[0]);
+                    // Extract transaction values from CSV line
+                    List<Double> transactions = new ArrayList<>();
+                    for (int i = 5; i < values.length; i++) {
+                        transactions.add(Double.parseDouble(values[i].trim()));
+                    }
+
+                    // Find the client in the list and add transactions
+                    for (Client client : clients) {
+                        if (client.getAccountNumber() == accountNumber) {
+                            // Convert List<Double> to List<Transaction> and update balances
+                            List<Transaction> transactionObjects = new ArrayList<>();
+                            double balance = 0;
+                            for (Double amount : transactions) {
+                                balance += amount;
+                                transactionObjects.add(new Transaction("", amount, balance));
+                            }
+                            client.transactions.addAll(transactionObjects);
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        if (clientUsernames[1] == null) {
-            client_2.setText(clientUsernames[1]);
+    }
+
+    public void onViewClick(ActionEvent actionEvent, int clientIndex) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("transaction_history.fxml"));
+            Parent root = loader.load();
+
+            TransactionHistoryController controller = loader.getController();
+            ObservableList<TransactionHistoryController.Transaction> transactions = FXCollections.observableArrayList(clients.get(clientIndex).getTransactions());
+            controller.setTransactions(transactions);
+
+            // Pass account number to TransactionHistoryController
+            int accountNumber = clients.get(clientIndex).getAccountNumber();
+            controller.setAccountNumber(accountNumber);
+
+            // Replace the current scene's content with transaction history view
+            Scene scene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            currentStage.setScene(scene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        if (clientUsernames[2] ==null) {
-            client_3.setText(clientUsernames[2]);
-        }
-        if (clientUsernames[3] == null) {
-            client_4.setText(clientUsernames[3]);
-        }
-
-        if (clientStatuses[0] == null) {
-            status_client_1.setText(clientStatuses[0]);
-        }
-        if (clientStatuses[1] == null) {
-            status_client_2.setText(clientStatuses[1]);
-        }
-        if (clientStatuses[2] == null) {
-            status_client_3.setText(clientStatuses[2]);
-        }
-        if (clientStatuses[3] == null) {
-            status_client_4.setText(clientStatuses[3]);
-        }
-    }
-
-    public void onClient_1_viewClick(ActionEvent actionEvent) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("client_1.fxml")));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void onclient_2_viewClick(ActionEvent actionEvent) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("client_2.fxml")));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void onclient_3_viewClick(ActionEvent actionEvent) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("client_3.fxml")));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void onclient_4_viewClick(ActionEvent actionEvent) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("client_4.fxml")));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void onclient_1_backClick(ActionEvent actionEvent) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("hello-view.fxml")));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void onclient_2_backClick(ActionEvent actionEvent) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("hello-view.fxml")));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void onclient_3_backClick(ActionEvent actionEvent) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("hello-view.fxml")));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void onclient_4_backClick(ActionEvent actionEvent) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("hello-view.fxml")));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void onactive_client_1Click(ActionEvent actionEvent) {
-    }
-
-    public void onactive_client_2Click(ActionEvent actionEvent) {
-    }
-
-    public void onactive_client_3Click(ActionEvent actionEvent) {
-    }
-
-    public void onactive_client_4Click(ActionEvent actionEvent) {
     }
 }

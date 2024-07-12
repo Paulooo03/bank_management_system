@@ -1,45 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.text.Text?>
 
 <VBox alignment="CENTER" prefHeight="342.0" prefWidth="488.0" spacing="20.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
-   <AnchorPane prefHeight="360.0" prefWidth="448.0">
-      <children>
-         <Button fx:id="client_4_view" layoutX="354.0" layoutY="153.0" mnemonicParsing="false" onAction="#onclient_4_viewClick" text="view" />
-         <Button fx:id="client_3_view" layoutX="354.0" layoutY="120.0" mnemonicParsing="false" onAction="#onclient_3_viewClick" text="view" />
-         <Button fx:id="client_2_view" layoutX="354.0" layoutY="84.0" mnemonicParsing="false" onAction="#onclient_2_viewClick" text="view" />
-         <Button fx:id="client_1_view" layoutX="354.0" layoutY="51.0" mnemonicParsing="false" onAction="#onClient_1_viewClick" text="view" />
-         <Label fx:id="client_4" layoutX="31.0" layoutY="157.0" text="Label" />
-         <Label fx:id="client_3" layoutX="31.0" layoutY="124.0" text="Label" />
-         <Label fx:id="client_2" layoutX="31.0" layoutY="88.0" text="Label" />
-         <Label fx:id="client_1" layoutX="31.0" layoutY="55.0" text="Label" />
-         <Text layoutX="194.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Admin Controls" />
-         <Line endX="272.0" endY="-6.0" layoutX="132.0" layoutY="84.0" startX="-113.0" startY="-6.0" />
-         <Line endX="267.0" endY="-6.0" layoutX="136.0" layoutY="115.0" startX="-118.0" startY="-6.0" />
-         <Line endX="267.0" endY="-6.0" layoutX="136.0" layoutY="151.0" startX="-116.0" startY="-6.0" />
-         <Line endX="285.0" endY="-6.0" layoutX="119.0" layoutY="183.0" startX="-100.0" startY="-6.0" />
-         <Line endX="279.0" endY="-12.0" layoutX="125.0" layoutY="57.0" startX="-107.0" startY="-12.0" />
-         <Line endX="7.5" endY="-46.5" layoutX="11.0" layoutY="224.0" startX="6.5" startY="-179.5" />
-         <Line endX="245.5" endY="-158.5" layoutX="159.0" layoutY="204.0" startX="245.5" startY="-27.0" />
-         <Text layoutX="183.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="status" />
-         <Text layoutX="183.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="status" />
-         <Text layoutX="183.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="status" />
-         <Text layoutX="183.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="status" />
-         <Label fx:id="status_client_1" layoutX="235.0" layoutY="55.0" text="Label" />
-         <Label fx:id="status_client_2" layoutX="235.0" layoutY="88.0" text="Label" />
-         <Label fx:id="status_client_3" layoutX="235.0" layoutY="124.0" text="Label" />
-         <Label fx:id="status_client_4" layoutX="235.0" layoutY="157.0" text="Label" />
-      </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+   </padding>
+   <AnchorPane fx:id="clientPane" prefHeight="360.0" prefWidth="448.0">
+      <!-- Dynamic client controls will be added here -->
    </AnchorPane>
-
-    <Label fx:id="welcomeText" />
+   <Label fx:id="welcomeText"/>
 </VBox>

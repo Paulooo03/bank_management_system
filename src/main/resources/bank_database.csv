@@ -1,11 +1,12 @@
-position,username,password,Status
-manager,Mike Ehrmantraut,Pimento cheese,
-,,,
-teller,Gus Fring,Mang Inasal,
-,,,
-Client,Walter White,Baby Blue,Active
-Client,Sibal,Minecraft,Inactive
-Client,Homelander,Milk,Active
-Client,Elon Musk,Tesla,Inactive
-Client,Ella,Genshin,Inactive
-Client,Lumine,Diluc,Active
+position,username,password,Status,Account number,,,,,
+manager,Mike Ehrmantraut,Pimento cheese,,,,,,,
+,,,,,,,,,
+teller,Gus Fring,Mang Inasal,,,,,,,
+,,,,,,,,,
+Client,Walter White,Baby Blue,Active,2309847904,200,-100,-20,70,90
+Client,Sibal,Minecraft,Active,2134789347,-200,-1000,1000,69,
+Client,Sibal,Minecraft,Inactive,1293478094,-200,-1000,1000,69,
+Client,Homelander,Milk,Active,2314693781,-12308,28930,-2343,-219,
+Client,Elon Musk,Tesla,Inactive,2319302480,123789,-237983,237489,21874,
+Client,Ella,Genshin,Inactive,2323904857,-2389,-823947,29374,-203487,
+Client,Lumine,Diluc,Active,1345456546,87324,-2930748,128794,-32789,

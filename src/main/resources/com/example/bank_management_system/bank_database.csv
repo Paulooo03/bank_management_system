@@ -1,9 +1,10 @@
-position,username,password,Status
-manager,Mike Ehrmantraut,Pimento cheese,
+position,Account number, username,password,Status,
+manager, 908134579, Mike Ehrmantraut,Pimento cheese,
 ,,,
-teller,Gus Fring,Mang Inasal,
+teller, 8932475, Gus Fring,Mang Inasal,
 ,,,
-Client,Walter White,Baby Blue,Active
-Client,Sibal,Minecraft,Inactive
-Client,Homelander,Milk,Active
-Client,Elon Musk,Tesla,Inactive
+Client,12345, Walter White,Baby Blue,Active,200,-100,-20,70, 90,
+Client,22228, Homelander,Milk,Active,12308,28930,-2343,-219,
+Client,33344, Elon Musk,Tesla,Inactive,123789,-237983,237489,21874,
+Client,55557, Ella,Genshin,Inactive,2389,-823947,29374,-203487,
+Client,99997, Lumine,Diluc,Active,87324,-2930748,128794,-32789,

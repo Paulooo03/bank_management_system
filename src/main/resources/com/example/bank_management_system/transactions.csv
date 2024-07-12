@@ -1,0 +1,5 @@
+ClientUsername,Date,Type,Amount,Balance
+Sibal,2024-01-01,Deposit,1000.0,1000.0
+john_doe,2024-01-02,Withdrawal,500.0,500.0
+jane_doe,2024-02-01,Deposit,2000.0,2000.0
+jane_doe,2024-02-05,Withdrawal,1000.0,1000.0
