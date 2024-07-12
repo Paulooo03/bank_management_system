@@ -111,25 +111,22 @@ public class HelloController {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if (values.length >= 5 && "Client".equalsIgnoreCase(values[0])) {
+                if (values.length >= 6 && "Client".equalsIgnoreCase(values[0])) {
                     int accountNumber = Integer.parseInt(values[1].trim());
 
-                    // Extract transaction values from CSV line
-                    List<Double> transactions = new ArrayList<>();
-                    for (int i = 5; i < values.length; i++) {
-                        transactions.add(Double.parseDouble(values[i].trim()));
+                    // Extract transaction values from CSV line, assuming dates are in the CSV
+                    List<Transaction> transactionObjects = new ArrayList<>();
+                    for (int i = 5; i < values.length; i += 2) {
+                        String date = values[i].trim();
+                        double amount = Double.parseDouble(values[i + 1].trim());
+                        // Balance calculation assuming it's cumulative
+                        double balance = transactionObjects.isEmpty() ? amount : transactionObjects.get(transactionObjects.size() - 1).getBalance() + amount;
+                        transactionObjects.add(new Transaction(date, amount, balance));
                     }
 
                     // Find the client in the list and add transactions
                     for (Client client : clients) {
                         if (client.getAccountNumber() == accountNumber) {
-                            // Convert List<Double> to List<Transaction> and update balances
-                            List<Transaction> transactionObjects = new ArrayList<>();
-                            double balance = 0;
-                            for (Double amount : transactions) {
-                                balance += amount;
-                                transactionObjects.add(new Transaction("", amount, balance));
-                            }
                             client.transactions.addAll(transactionObjects);
                             break;
                         }
@@ -141,6 +138,7 @@ public class HelloController {
         }
     }
 
+
     public void onViewClick(ActionEvent actionEvent, int clientIndex) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("transaction_history.fxml"));
@@ -150,11 +148,15 @@ public class HelloController {
             ObservableList<TransactionHistoryController.Transaction> transactions = FXCollections.observableArrayList(clients.get(clientIndex).getTransactions());
             controller.setTransactions(transactions);
 
-            // Pass account number to TransactionHistoryController
             int accountNumber = clients.get(clientIndex).getAccountNumber();
             controller.setAccountNumber(accountNumber);
 
-            // Replace the current scene's content with transaction history view
+            String status = clients.get(clientIndex).status;
+            controller.setStatus(status);
+
+            String username = clients.get(clientIndex).username;
+            controller.setUsername(username);
+
             Scene scene = new Scene(root);
             Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             currentStage.setScene(scene);
@@ -163,4 +165,6 @@ public class HelloController {
             e.printStackTrace();
         }
     }
+
+
 }
