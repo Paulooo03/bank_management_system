@@ -23,13 +23,54 @@ import java.util.List;
 import java.util.Objects;
 
 public class HelloController {
+    public Button onAdminClick;
+    public Button onClientClick;
+    public Button onTellerClick;
+    public Button onManagerClick;
     @FXML
     private AnchorPane clientPane;
 
     private final List<Client> clients = new ArrayList<>();
     private int numColumns = 0;
 
-    public class Client {
+    @FXML
+    private void onAdminClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            currentStage.setScene(scene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onClientClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("client.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            currentStage.setScene(scene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onTellerClick(ActionEvent actionEvent) {
+        // Implement teller click logic
+    }
+
+    public void onManagerClick(ActionEvent actionEvent) {
+        // Implement manager click logic
+    }
+
+    //dont touch this admin part
+    public static class Client {
         String username;
         String status;
         int accountNumber;
@@ -138,7 +179,6 @@ public class HelloController {
         }
     }
 
-
     public void onViewClick(ActionEvent actionEvent, int clientIndex) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("transaction_history.fxml"));
@@ -165,6 +205,5 @@ public class HelloController {
             e.printStackTrace();
         }
     }
-
-
+    //until here is admin part
 }
