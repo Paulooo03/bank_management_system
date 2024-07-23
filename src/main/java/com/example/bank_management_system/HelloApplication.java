@@ -16,7 +16,7 @@ public class HelloApplication extends Application {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("user_selection.fxml")));
             Scene scene = new Scene(root, 1280, 720);
             stage.setScene(scene);
-            stage.setTitle("Bank Management System");
+            stage.setTitle("Le Bank Management System");
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();

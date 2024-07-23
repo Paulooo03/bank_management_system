@@ -99,7 +99,7 @@ public class TransactionHistoryController {
 
     public void handleBackButton(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("admin_view.fxml"));
             Parent root = loader.load();
 
             Scene scene = new Scene(root);
