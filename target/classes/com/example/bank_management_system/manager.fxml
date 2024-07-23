@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.ManagerController">
+    <children>
+        <Label layoutX="14.0" layoutY="14.0" text="Manager's Dashboard" />
+        <TextField fx:id="accountNumberTextField" layoutX="14.0" layoutY="44.0" promptText="Enter Account Number"/>
+        <Button fx:id="checkAccountStatusButton" layoutX="14.0" layoutY="74.0" text="Check Account Status" onAction="#handleCheckAccountStatusButtonAction"/>
+        <TextArea fx:id="accountDetailsTextArea" layoutX="14.0" layoutY="104.0" prefHeight="200.0" prefWidth="400.0" wrapText="true"/>
+    </children>
+</AnchorPane>

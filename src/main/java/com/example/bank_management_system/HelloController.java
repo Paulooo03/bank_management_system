@@ -66,8 +66,19 @@ public class HelloController {
     }
 
     public void onManagerClick(ActionEvent actionEvent) {
-        // Implement manager click logic
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("manager.fxml"));
+            Parent managerView = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(managerView);
+            stage.setScene(scene);
+            stage.setTitle("Manager Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
     //dont touch this admin part
     public static class Client {
