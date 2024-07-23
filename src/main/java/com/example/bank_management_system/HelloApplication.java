@@ -14,7 +14,7 @@ public class HelloApplication extends Application {
         try {
             System.out.println("Loading user_selection.fxml...");
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("user_selection.fxml")));
-            Scene scene = new Scene(root);
+            Scene scene = new Scene(root, 1280, 720);
             stage.setScene(scene);
             stage.setTitle("Bank Management System");
             stage.show();

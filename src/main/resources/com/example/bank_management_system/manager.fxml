@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.ManagerController">
+<AnchorPane prefHeight="720" prefWidth="1280" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.ManagerController">
     <children>
         <Label layoutX="14.0" layoutY="14.0" text="Manager's Dashboard" />
         <TextField fx:id="accountNumberTextField" layoutX="14.0" layoutY="44.0" promptText="Enter Account Number"/>

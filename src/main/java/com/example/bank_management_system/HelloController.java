@@ -111,7 +111,7 @@ public class HelloController {
         // Debug: Print number of clients read
         System.out.println("Number of clients read: " + clients.size());
         System.out.println("Number of columns per client: " + numColumns);
-
+        /*
         // Dynamically create UI elements based on the number of clients
         for (int i = 0; i < clients.size(); i++) {
             Client client = clients.get(i);
@@ -133,6 +133,8 @@ public class HelloController {
         // Adjust AnchorPane height based on the number of clients
         double newHeight = 55.0 + clients.size() * 33.0 + 20.0; // Adding extra space
         clientPane.setPrefHeight(newHeight);
+
+         */
     }
 
     private void loadClients() {
