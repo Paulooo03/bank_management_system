@@ -9,7 +9,7 @@
     <children>
         <TextField fx:id="accountNumberInput" layoutX="213.0" layoutY="105.0" />
         <TextField fx:id="passwordInput" layoutX="213.0" layoutY="175.0" />
-        <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#onBackClick" text="Back" />
+        <Button layoutX="14.0" layoutY="270.0" mnemonicParsing="false" onAction="#onBackClick" text="Back" />
         <Button layoutX="265.0" layoutY="270.0" mnemonicParsing="false" onAction="#onClickLogin" text="Login" />
         <Text layoutX="243.0" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Number" />
         <Text layoutX="263.0" layoutY="226.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />

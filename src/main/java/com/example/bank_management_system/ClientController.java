@@ -40,12 +40,13 @@ public class ClientController {
         String accountNumber = accountNumberInput.getText().trim();
         String password = passwordInput.getText().trim();
 
-        if (validateUser(accountNumber, password)) {
-            showUserTransactionHistory(accountNumber);
-        } else {
-            // Handle invalid login
-            System.out.println("Invalid login credentials.");
-        }
+        // Uncomment the next lines if you want to use validation
+        // if (validateUser(accountNumber, password)) {
+        showUserTransactionHistory(accountNumber);
+        // } else {
+        //     // Handle invalid login
+        //     System.out.println("Invalid login credentials.");
+        // }
     }
 
     private boolean validateUser(String accountNumber, String password) {
