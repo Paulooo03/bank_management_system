@@ -46,7 +46,16 @@ public class HelloController {
     }
 
     public void onTellerClick(ActionEvent actionEvent) {
-        // Implement teller click logic
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teller.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root, 1280, 720);
+            Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            currentStage.setScene(scene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onManagerClick(ActionEvent actionEvent) {
