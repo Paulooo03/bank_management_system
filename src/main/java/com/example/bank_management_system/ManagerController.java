@@ -40,9 +40,11 @@ public class ManagerController {
             checkAccountStatusButton.setDisable(newValue.trim().isEmpty());
         });
 
+        accounts = new ArrayList<>();
         try {
-            accounts = loadAccountsFromCSV("src/main/resources/com/example/bank_management_system/manager.csv");
-            System.out.println("Total managers loaded: " + accounts.size()); // Debug statement
+            accounts.addAll(loadAccountsFromCSV("src/main/resources/com/example/bank_management_system/manager.csv", "manager"));
+            accounts.addAll(loadAccountsFromCSV("src/main/resources/com/example/bank_management_system/bank_database.csv", "client"));
+            System.out.println("Total accounts loaded: " + accounts.size()); // Debug statement
         } catch (IOException e) {
             e.printStackTrace();
             accountDetailsTextArea.setText("Failed to load account data.");
@@ -68,7 +70,7 @@ public class ManagerController {
         accountDetailsTextArea.setText(details.toString());
     }
 
-    private List<Account> loadAccountsFromCSV(String filePath) throws IOException {
+    private List<Account> loadAccountsFromCSV(String filePath, String accountType) throws IOException {
         List<Account> accounts = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -76,18 +78,26 @@ public class ManagerController {
                 System.out.println("Reading line: " + line); // Debug statement
                 String[] values = line.split(",");
                 if (values.length > 4) {
-                    String position = values[0].trim();
-                    if ("manager".equalsIgnoreCase(position)) {
-                        String accountNumber = values[1].trim();
-                        String username = values[2].trim();
-                        String password = values[3].trim();
-                        String status = values.length > 4 ? values[4].trim() : "";
+                    String accountNumber = values[1].trim();
+                    String username = values[2].trim();
+                    String password = values[3].trim();
+                    String status = values.length > 4 ? values[4].trim() : "";
+                    double balance = 0.0;
 
-                        Account managerAccount = new Account(accountNumber, username, status, 0);
+                    if (values.length > 5 && isNumeric(values[5].trim())) {
+                        balance = Double.parseDouble(values[5].trim());
+                    }
+
+                    if ("manager".equalsIgnoreCase(accountType) && "manager".equalsIgnoreCase(values[0].trim())) {
+                        Account managerAccount = new Account(accountNumber, username, status, balance);
                         accounts.add(managerAccount);
                         System.out.println("Manager added: " + username + ", Status: " + status + ", Account Number: " + accountNumber);
+                    } else if ("client".equalsIgnoreCase(accountType)) {
+                        Account clientAccount = new ClientAccount(accountNumber, username, status, balance);
+                        accounts.add(clientAccount);
+                        System.out.println("Client added: " + username + ", Status: " + status + ", Account Number: " + accountNumber);
                     } else {
-                        System.out.println("Skipping non-manager account.");
+                        System.out.println("Skipping unknown account type.");
                     }
                 } else {
                     System.out.println("Line does not have enough columns: " + line);
@@ -95,6 +105,18 @@ public class ManagerController {
             }
         }
         return accounts;
+    }
+
+    private boolean isNumeric(String str) {
+        if (str == null) {
+            return false;
+        }
+        try {
+            Double.parseDouble(str);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
     private Account getAccountDetails(String accountNumber) {
@@ -134,6 +156,12 @@ public class ManagerController {
 
         public double getBalance() {
             return balance;
+        }
+    }
+
+    public static class ClientAccount extends Account {
+        public ClientAccount(String accountNumber, String accountHolderName, String status, double balance) {
+            super(accountNumber, accountHolderName, status, balance);
         }
     }
 
