@@ -10,12 +10,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 
 public class TellerController {
 
@@ -40,9 +44,29 @@ public class TellerController {
         UserTransactionHistoryController controller = new UserTransactionHistoryController();
         ObservableList<UserTransactionHistoryController.Transaction> transactions = controller.loadTransactions(accountNumber);
 
-        // Implement logic to display transactions (e.g., open a new stage with transaction details)
-        // For example, you could load another FXML file or show a dialog
+        if (transactions.isEmpty()) {
+            showAlert(AlertType.INFORMATION, "Transaction History", "No transactions found for account number: " + accountNumber);
+        } else {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("user_transaction_history.fxml"));
+                Parent root = loader.load();
+
+                // Get the controller for the user_transaction_history.fxml
+                UserTransactionHistoryController historyController = loader.getController();
+                historyController.setTransactions(transactions);
+
+                // Show the transaction history view
+                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                currentStage.setScene(scene);
+                currentStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(AlertType.ERROR, "Error", "Failed to load transaction history view.");
+            }
+        }
     }
+
 
     @FXML
     private void handleCheckAccountDetails(ActionEvent event) {
@@ -75,14 +99,49 @@ public class TellerController {
             return;
         }
 
-        // Implement logic to transfer money here
-        // This would likely involve getting the amount to transfer and processing the transfer
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Transfer Money");
+        dialog.setHeaderText("Enter amount and operation");
+        dialog.setContentText("Amount and operation (e.g., '100 Transfer' or '50 Withdrawal'):");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            String[] input = result.get().split(" ");
+            if (input.length != 2) {
+                showAlert(AlertType.ERROR, "Error", "Invalid input. Please enter 'amount operation'.");
+                return;
+            }
+
+            try {
+                double amount = Double.parseDouble(input[0]);
+                String operation = input[1].trim().toLowerCase();
+                if (!operation.equals("transfer") && !operation.equals("withdrawal")) {
+                    showAlert(AlertType.ERROR, "Error", "Invalid operation. Please enter 'Transfer' or 'Withdrawal'.");
+                    return;
+                }
+
+                // Update CSV
+                updateAccountBalance(accountNumber, amount, operation);
+
+                showAlert(AlertType.INFORMATION, "Transfer Successful",
+                        String.format("%s $%.2f for account number: %s",
+                                operation.substring(0, 1).toUpperCase() + operation.substring(1), amount, accountNumber));
+
+            } catch (NumberFormatException e) {
+                showAlert(AlertType.ERROR, "Error", "Invalid amount entered.");
+            } catch (IOException e) {
+                showAlert(AlertType.ERROR, "Error", "Failed to update account balance.");
+                e.printStackTrace();
+            }
+        }
     }
+
+
 
     @FXML
     private void handleBackButton(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("user_selection.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -111,6 +170,42 @@ public class TellerController {
             }
         }
         return null;
+    }
+
+    private void updateAccountBalance(String accountNumber, double amount, String operation) throws IOException {
+        String filePath = "src/main/resources/com/example/bank_management_system/bank_database.csv";
+        String tempFilePath = "src/main/resources/com/example/bank_management_system/temp_bank_database.csv";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(tempFilePath))) {
+
+            String line;
+            boolean accountUpdated = false;
+
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values.length >= 5 && "Client".equalsIgnoreCase(values[0]) && values[1].trim().equals(accountNumber)) {
+                    double balance = Double.parseDouble(values[3].trim());
+                    if (operation.equals("transfer")) {
+                        balance += amount; // Assuming money is added to the account
+                    } else if (operation.equals("withdrawal")) {
+                        balance -= amount; // Assuming money is withdrawn from the account
+                    }
+                    values[3] = String.valueOf(balance); // Update balance
+                    line = String.join(",", values);
+                    accountUpdated = true;
+                }
+                bw.write(line);
+                bw.newLine();
+            }
+
+            if (!accountUpdated) {
+                throw new IOException("Account not found for update.");
+            }
+        }
+
+        // Replace old file with updated file
+        Files.move(Paths.get(tempFilePath), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
     }
 
     private void showAlert(AlertType type, String title, String message) {

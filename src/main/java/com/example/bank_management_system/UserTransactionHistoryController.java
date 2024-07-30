@@ -14,11 +14,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class UserTransactionHistoryController {
 
@@ -36,7 +36,6 @@ public class UserTransactionHistoryController {
 
     @FXML
     public void initialize() {
-        // Initialize table columns with cell value factories
         dateColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
         amountColumn.setCellValueFactory(cellData -> cellData.getValue().amountProperty().asObject());
         balanceColumn.setCellValueFactory(cellData -> cellData.getValue().balanceProperty().asObject());
@@ -73,7 +72,7 @@ public class UserTransactionHistoryController {
     @FXML
     public void onBackClick(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("user_selection.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
             Parent root = loader.load();
 
             Scene scene = new Scene(root);
@@ -86,8 +85,29 @@ public class UserTransactionHistoryController {
     }
 
     @FXML
-    public void handleExportCSV() {
-        // Implement CSV export logic
+    public void handleExportCSV(ActionEvent actionEvent) {
+        ObservableList<Transaction> transactions = transactionTable.getItems();
+        if (transactions == null || transactions.isEmpty()) {
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Transaction History");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File file = fileChooser.showSaveDialog(new Stage());
+
+        if (file != null) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write("Date,Amount,Balance\n");
+                for (Transaction transaction : transactions) {
+                    writer.write(String.format("%s,%.2f,%.2f\n",
+                            transaction.getDate(), transaction.getAmount(), transaction.getBalance()));
+                }
+                writer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static class Transaction {
@@ -111,6 +131,14 @@ public class UserTransactionHistoryController {
 
         public DoubleProperty balanceProperty() {
             return balance;
+        }
+
+        public String getDate() {
+            return date.get();
+        }
+
+        public double getAmount() {
+            return amount.get();
         }
 
         public double getBalance() {

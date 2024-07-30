@@ -1,6 +1,5 @@
 package com.example.bank_management_system;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,6 +40,7 @@ public class TransactionHistoryController {
     @FXML
     public void initialize() {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
         balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
     }
@@ -84,10 +84,10 @@ public class TransactionHistoryController {
 
         if (file != null) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                writer.write("ClientUsername,Date,Amount,Balance\n");
+                writer.write("ClientUsername,Date,Type,Amount,Balance\n");
                 for (Transaction transaction : transactions) {
-                    writer.write(String.format("%s,%s,%.2f,%.2f\n",
-                            username, transaction.getDate(),
+                    writer.write(String.format("%s,%s,%s,%.2f,%.2f\n",
+                            username, transaction.getDate(), transaction.getType(),
                             transaction.getAmount(), transaction.getBalance()));
                 }
                 writer.flush();
@@ -111,7 +111,8 @@ public class TransactionHistoryController {
         }
     }
 
-    public void onactivateOrDeactivateClick(ActionEvent actionEvent) {
+    @FXML
+    public void onActivateOrDeactivateClick(ActionEvent actionEvent) {
         if ("Active".equalsIgnoreCase(status)) {
             status = "Inactive";
         } else {
@@ -128,23 +129,17 @@ public class TransactionHistoryController {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                // Debug statement to check each line being read
-                System.out.println("Reading line: " + line);
-
-                // Splitting on comma followed by zero or more spaces
                 String[] values = line.split(",\\s*");
 
                 if (values.length >= 5 && "Client".equalsIgnoreCase(values[0])) {
                     try {
-                        // Remove any leading or trailing whitespace from account number
                         int parsedAccountNumber = Integer.parseInt(values[1].trim());
                         if (parsedAccountNumber == accountNumber) {
-                            System.out.println("Updating status for account number: " + accountNumber); // Debug statement
-                            values[4] = status; // Update the status
+                            values[4] = status;
                             line = String.join(",", values);
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println("Skipping line due to number format issue: " + line); // Debug statement
+                        System.out.println("Skipping line due to number format issue: " + line);
                     }
                 }
                 lines.add(line);
@@ -161,13 +156,34 @@ public class TransactionHistoryController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        System.out.println("CSV file updated."); // Debug statement
     }
 
-    public record Transaction(String date, double amount, double balance) {
+    public static class Transaction {
+        private final String date;
+        private String type = "";
+        private final double amount;
+        private double balance = 0;
+
+        public Transaction(String date, String type, double amount, double balance) {
+            this.date = date;
+            this.type = type;
+            this.amount = amount;
+            this.balance = balance;
+        }
+
+        public Transaction(String date, double amount, String description) {
+            this.date = date;
+            this.type = type;
+            this.amount = amount;
+            this.balance = balance;
+        }
+
         public String getDate() {
             return date;
+        }
+
+        public String getType() {
+            return type;
         }
 
         public double getAmount() {

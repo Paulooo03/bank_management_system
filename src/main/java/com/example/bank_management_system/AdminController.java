@@ -115,19 +115,20 @@ public class AdminController {
 
                     // Extract transaction values from CSV line, assuming dates are in the CSV
                     List<Transaction> transactionObjects = new ArrayList<>();
-                    for (int i = 5; i < values.length; i += 2) {
-                        String date = values[i].trim();
-                        double amount = Double.parseDouble(values[i + 1].trim());
-                        // Balance calculation assuming it's cumulative
-                        double balance = transactionObjects.isEmpty() ? amount : transactionObjects.get(transactionObjects.size() - 1).getBalance() + amount;
-                        transactionObjects.add(new Transaction(date, amount, balance));
+                    for (int i = 5; i < values.length; i++) {
+                        String[] transactionParts = values[i].split(";");
+                        if (transactionParts.length == 3) {
+                            String date = transactionParts[0].trim();
+                            double amount = Double.parseDouble(transactionParts[1].trim());
+                            String description = transactionParts[2].trim();
+                            transactionObjects.add(new Transaction(date, amount, description));
+                        }
                     }
 
-                    // Find the client in the list and add transactions
+                    // Find the client by account number and add transactions
                     for (Client client : clients) {
                         if (client.getAccountNumber() == accountNumber) {
                             client.transactions.addAll(transactionObjects);
-                            break;
                         }
                     }
                 }
@@ -137,44 +138,38 @@ public class AdminController {
         }
     }
 
-    public void onViewClick(int clientIndex) {
+    @FXML
+    private void handleBackButton(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("user_selection.fxml"));
+            Scene scene = new Scene(root, 1280, 720);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(scene);
+            currentStage.setTitle("Le Bank Management System");
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onViewClick(int clientIndex) {
+        Client selectedClient = clients.get(clientIndex);
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("transaction_history.fxml"));
-            Object root = loader.load();
-
-            TransactionHistoryController controller = loader.getController();
-            ObservableList<TransactionHistoryController.Transaction> transactions = FXCollections.observableArrayList(clients.get(clientIndex).getTransactions());
-            controller.setTransactions(transactions);
-
-            int accountNumber = clients.get(clientIndex).getAccountNumber();
-            controller.setAccountNumber(accountNumber);
-
-            String status = clients.get(clientIndex).status;
-            controller.setStatus(status);
-
-            String username = clients.get(clientIndex).username;
-            controller.setUsername(username);
-
-            Scene scene = new Scene((Parent) root);
-            Stage currentStage = (Stage) clientPane.getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public void handleBackButton(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("user_selection.fxml"));
             Parent root = loader.load();
 
-            Scene scene = new Scene(root);
-            Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.show();
+            TransactionHistoryController controller = loader.getController();
+            ObservableList<Transaction> transactionsObservableList = FXCollections.observableArrayList(selectedClient.getTransactions());
+            controller.setTransactions(transactionsObservableList);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Transaction History for " + selectedClient.username);
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }

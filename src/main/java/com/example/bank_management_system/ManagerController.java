@@ -167,7 +167,7 @@ public class ManagerController {
 
     public void handleBackButton(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("user_selection.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
             Parent root = loader.load();
 
             Scene scene = new Scene(root);
