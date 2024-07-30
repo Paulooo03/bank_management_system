@@ -12,8 +12,9 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            System.out.println("Loading user_selection.fxml...");
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Login.fxml")));
+            System.out.println("Loading Login.fxml...");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+            Parent root = loader.load();
             Scene scene = new Scene(root, 1280, 720);
             stage.setScene(scene);
             stage.setTitle("Le Bank Management System");

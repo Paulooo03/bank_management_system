@@ -1,18 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="720" prefWidth="1280" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.UserTransactionHistoryController">
-    <children>
-        <TableView fx:id="transactionTable" layoutX="14.0" layoutY="14.0" prefHeight="400.0" prefWidth="600.0">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.UserTransactionHistoryController">
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e0e0e0" height="733.0" layoutX="-3.0" layoutY="-8.0" stroke="WHITE" strokeType="INSIDE" width="229.0" />
+    <Button layoutX="15.0" layoutY="670.0" onAction="#onBackClick" prefHeight="30.0" prefWidth="178.0" text="&lt;&lt;&lt;     Log Out">
+        <font>
+        <Font name="Consolas" size="12.0" />
+        </font>
+    </Button>
+    <GridPane layoutX="283.0" layoutY="294.0" prefHeight="380.0" prefWidth="674.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="391.93335571289066" minHeight="10.0" prefHeight="390.46664428710943" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="391.93335571289066" minHeight="10.0" prefHeight="87.53335571289062" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <Button onAction="#handleExportCSV" text="Export CSV" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+        <TableView fx:id="transactionTable" prefHeight="334.0" prefWidth="803.0">
             <columns>
-                <TableColumn fx:id="dateColumn" text="Date" />
-                <TableColumn fx:id="amountColumn" text="Amount" />
-                <TableColumn fx:id="balanceColumn" text="Balance" />
+                <TableColumn fx:id="dateColumn" prefWidth="138.66668701171875" text="Date" />
+                <TableColumn fx:id="amountColumn" prefWidth="210.40008544921875" text="Reason" />
+                <TableColumn fx:id="balanceColumn" prefWidth="321.5999450683594" text="Amount" />
             </columns>
         </TableView>
-        <Button layoutX="14.0" layoutY="430.0" text="Back" onAction="#onBackClick"/>
-        <Button layoutX="100.0" layoutY="430.0" text="Export CSV" onAction="#handleExportCSV"/>
-    </children>
+    </GridPane>
+    <Text fx:id="clientName" layoutX="248.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hello, " wrappingWidth="509.52728271484375">
+        <font>
+          <Font size="47.0" />
+        </font>
+    </Text>
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#348199" height="140.0" layoutX="248.0" layoutY="124.0" stroke="WHITE" strokeType="INSIDE" width="391.0" />
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1c86a9" height="140.0" layoutX="670.0" layoutY="125.0" stroke="WHITE" strokeType="INSIDE" width="289.0" />
+    <Text fill="WHITE" layoutX="269.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Balance" wrappingWidth="145.87002563476562">
+        <font>
+          <Font name="Century Gothic" size="29.0" />
+        </font>
+    </Text>
+    <Text fill="WHITE" layoutX="691.0" layoutY="164.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Savings" wrappingWidth="145.87002563476562">
+        <font>
+          <Font name="Century Gothic" size="29.0" />
+        </font>
+    </Text>
+    <Text fx:id="balance" fill="WHITE" layoutX="269.0" layoutY="223.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PHP" wrappingWidth="364.2700500488281">
+        <font>
+          <Font name="Century Gothic" size="45.0" />
+        </font>
+    </Text>
+    <Text fx:id="savings" fill="WHITE" layoutX="691.0" layoutY="223.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PHP" wrappingWidth="264.2699890136719">
+        <font>
+          <Font name="Century Gothic" size="45.0" />
+        </font>
+    </Text>
+    <Text layoutX="82.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Send Money" wrappingWidth="75.00798034667969" />
+    <Text layoutX="71.0" layoutY="347.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request Loan" wrappingWidth="75.00798034667969" />
+    <TextField alignment="TOP_LEFT" focusTraversable="false" layoutX="1023.0" layoutY="125.0" prefHeight="506.0" prefWidth="198.0" />
+    <TextField layoutX="14.0" layoutY="203.0" prefHeight="41.0" prefWidth="198.0" promptText="PHP" />
+    <Button layoutX="85.0" layoutY="252.0" mnemonicParsing="false" text="SEND" />
+    <TextField layoutX="14.0" layoutY="155.0" prefHeight="41.0" prefWidth="198.0" promptText="Account Number" />
+    <TextField layoutX="10.0" layoutY="357.0" prefHeight="41.0" prefWidth="198.0" promptText="PHP" />
+    <Button layoutX="85.0" layoutY="405.0" mnemonicParsing="false" text="LOAN" />
 </AnchorPane>

@@ -157,7 +157,10 @@ public class LoginController {
 
             UserTransactionHistoryController controller = loader.getController();
             ObservableList<UserTransactionHistoryController.Transaction> transactions = loadTransactions(accountNumber);
-            controller.setTransactions(transactions);
+
+            // You need to pass both transactions and clientName
+            String clientName = getClientNameFromAccount(accountNumber);
+            controller.setTransactions(transactions, clientName);
 
             Scene scene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -169,6 +172,16 @@ public class LoginController {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to load transaction history.");
         }
     }
+
+    private String getClientNameFromAccount(String accountNumber) {
+        for (Account account : accounts) {
+            if (account.getAccountNumber().equals(accountNumber)) {
+                return account.getUsername(); // or however you want to retrieve the client name
+            }
+        }
+        return "Unknown"; // Default name if not found
+    }
+
 
     private ObservableList<UserTransactionHistoryController.Transaction> loadTransactions(String accountNumber) {
         ObservableList<UserTransactionHistoryController.Transaction> transactions = FXCollections.observableArrayList();

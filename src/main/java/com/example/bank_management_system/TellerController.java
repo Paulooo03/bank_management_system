@@ -31,7 +31,7 @@ public class TellerController {
     private Button checkAccountDetailsButton;
     @FXML
     private Button transferMoneyButton;
-
+/*
     @FXML
     private void handleViewTransactionHistory(ActionEvent event) {
         String accountNumber = accountNumberTextField.getText().trim();
@@ -65,7 +65,7 @@ public class TellerController {
                 showAlert(AlertType.ERROR, "Error", "Failed to load transaction history view.");
             }
         }
-    }
+    }*/
 
 
     @FXML

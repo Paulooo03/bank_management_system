@@ -14,23 +14,30 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedWriter;
 
 public class UserTransactionHistoryController {
 
+    @FXML
+    private Text clientName;
+    @FXML
+    private Text balance;
     @FXML
     private TableView<Transaction> transactionTable;
 
     @FXML
     private TableColumn<Transaction, String> dateColumn;
-
     @FXML
     private TableColumn<Transaction, Double> amountColumn;
-
     @FXML
     private TableColumn<Transaction, Double> balanceColumn;
 
@@ -41,24 +48,32 @@ public class UserTransactionHistoryController {
         balanceColumn.setCellValueFactory(cellData -> cellData.getValue().balanceProperty().asObject());
     }
 
-    public void setTransactions(ObservableList<Transaction> transactions) {
+    public void setTransactions(ObservableList<Transaction> transactions, String clientName) {
         transactionTable.setItems(transactions);
+        setClientName(clientName);
+        double latestBalance = transactions.isEmpty() ? 0.0 : transactions.get(transactions.size() - 1).getBalance();
+        setBalance(latestBalance);
     }
 
     public ObservableList<Transaction> loadTransactions(String accountNumber) {
         ObservableList<Transaction> transactions = FXCollections.observableArrayList();
         String filePath = "src/main/resources/com/example/bank_management_system/bank_database.csv";
+        double latestBalance = 0.0;
+        String clientName = "Unknown";
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if (values.length >= 4 && "Client".equalsIgnoreCase(values[0]) && values[1].trim().equals(accountNumber)) {
+                if (values.length >= 5 && "Client".equalsIgnoreCase(values[0]) && values[1].trim().equals(accountNumber)) {
+                    clientName = values[2].trim(); // Assume client name is in the third column
                     for (int i = 5; i < values.length; i += 2) {
-                        String date = values[i].trim();
-                        double amount = Double.parseDouble(values[i + 1].trim());
-                        double balance = transactions.isEmpty() ? amount : transactions.get(transactions.size() - 1).getBalance() + amount;
-                        transactions.add(new Transaction(date, amount, balance));
+                        if (i + 1 < values.length) { // Ensure there's both a date and amount
+                            String date = values[i].trim();
+                            double amount = Double.parseDouble(values[i + 1].trim());
+                            latestBalance += amount; // Update the balance incrementally
+                            transactions.add(new Transaction(date, amount, latestBalance));
+                        }
                     }
                     break; // Assuming account numbers are unique, stop after finding the correct account
                 }
@@ -66,7 +81,17 @@ public class UserTransactionHistoryController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Return the transactions
         return transactions;
+    }
+
+    public void setClientName(String name) {
+        clientName.setText("Hello, " + name);
+    }
+
+    public void setBalance(double balanceAmount) {
+        balance.setText("PHP " + String.format("%.2f", balanceAmount));
     }
 
     @FXML

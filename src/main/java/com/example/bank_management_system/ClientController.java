@@ -54,7 +54,7 @@ public class ClientController {
         // This is a placeholder implementation:
         return accountNumber.equals("12345") && password.equals("password"); // Replace with actual validation
     }
-
+    /*
     private void showUserTransactionHistory(String accountNumber) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("user_transaction_history.fxml"));
@@ -71,5 +71,5 @@ public class ClientController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
