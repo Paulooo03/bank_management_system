@@ -12,6 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,29 +29,18 @@ public class HelloController {
     @FXML
     private Button onManagerClick;
 
-    private final Map<String, String> managerCredentials = new HashMap<>() {{
-        put("Mike Ehrmantraut", "Pimento cheese");
-    }};
+    private final Map<String, String> managerCredentials = new HashMap<>();
+    private final Map<String, String> tellerCredentials = new HashMap<>();
 
-    private final Map<String, String> tellerCredentials = new HashMap<>() {{
-        put("Gus Fring", "Mang Inasal");
-    }};
-
-    private final Map<String, String> clientCredentials = new HashMap<>() {{
-        put("Walter White", "Baby Blue");
-        put("Sibal", "Minecraft");
-        put("Homelander", "Milk");
-        put("Elon Musk", "Tesla");
-        put("Ella", "Genshin");
-        put("Lumine", "Diluc");
-    }};
+    public HelloController() {
+        loadCredentialsFromCSV();
+    }
 
     @FXML
     private void onAdminClick(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("admin_view.fxml"));
             Parent root = loader.load();
-
             Scene scene = new Scene(root, 1280, 720); // Set scene size
             Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             currentStage.setScene(scene);
@@ -137,7 +128,7 @@ public class HelloController {
                     showAlert(AlertType.ERROR, "Login Failed", "Invalid username or password. Please try again.");
                     return false;
                 }
-                return valid;
+                return true;
             }
             return null; // Return null when Cancel is clicked or dialog is closed
         });
@@ -169,5 +160,32 @@ public class HelloController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void loadCredentialsFromCSV() {
+        String filePath = "src/main/resources/com/example/bank_management_system/bank_database.csv";
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",", -1); // Using -1 to include trailing empty strings
+                if (values.length >= 4) {
+                    String role = values[0].trim();
+                    String accountName = values[2].trim(); // Username is at index 2
+                    String password = values[3].trim(); // Password is at index 3
+                    if (!accountName.isEmpty() && !password.isEmpty()) {
+                        switch (role.toLowerCase()) {
+                            case "manager":
+                                managerCredentials.put(accountName, password);
+                                break;
+                            case "teller":
+                                tellerCredentials.put(accountName, password);
+                                break;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
