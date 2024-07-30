@@ -43,7 +43,7 @@
             <children>
                 <TextField fx:id="accountNumberField" GridPane.rowIndex="1" />
                 <PasswordField fx:id="passwordField" GridPane.rowIndex="3" />
-                <Text fill="#237189" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Number" wrappingWidth="95.21104431152344">
+                <Text fill="#237189" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Number" wrappingWidth="144.81101989746094">
                     <font>
                         <Font size="16.0" />
                     </font>

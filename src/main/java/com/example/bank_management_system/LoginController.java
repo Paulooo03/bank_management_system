@@ -63,7 +63,18 @@ public class LoginController {
             return;
         }
 
-        showUserTransactionHistory(accountNumber, event);
+        // Check the position of the account and navigate accordingly
+        switch (account.getPosition().toLowerCase()) {
+            case "manager":
+                navigateToManagerScreen(event);
+                break;
+            case "teller":
+                navigateToTellerScreen(event);
+                break;
+            default:
+                showUserTransactionHistory(accountNumber, event);
+                break;
+        }
     }
 
     @FXML
@@ -109,6 +120,34 @@ public class LoginController {
             }
         }
         return null;
+    }
+
+    private void navigateToManagerScreen(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("manager.fxml")));
+            Scene scene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(scene);
+            currentStage.setTitle("Manager Dashboard");
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load manager dashboard.");
+        }
+    }
+
+    private void navigateToTellerScreen(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("teller.fxml")));
+            Scene scene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(scene);
+            currentStage.setTitle("Teller Dashboard");
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load teller dashboard.");
+        }
     }
 
     private void showUserTransactionHistory(String accountNumber, ActionEvent event) {

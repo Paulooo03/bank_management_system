@@ -34,7 +34,7 @@ public class ClientController {
             e.printStackTrace();
         }
     }
-
+/*
     @FXML
     public void onClickLogin(ActionEvent actionEvent) {
         String accountNumber = accountNumberInput.getText().trim();
@@ -47,7 +47,7 @@ public class ClientController {
         //     // Handle invalid login
         //     System.out.println("Invalid login credentials.");
         // }
-    }
+    }*/
 
     private boolean validateUser(String accountNumber, String password) {
         // Implement validation logic here. For example, check against a list of users or a database.

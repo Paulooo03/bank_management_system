@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="720" prefWidth="1280" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.UserTransactionHistoryController">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="com.example.bank_management_system.UserTransactionHistoryController">
     <children>
-        <TableView fx:id="transactionTable" layoutX="14.0" layoutY="14.0" prefHeight="400.0" prefWidth="600.0">
-            <columns>
-                <TableColumn fx:id="dateColumn" text="Date" />
-                <TableColumn fx:id="amountColumn" text="Amount" />
-                <TableColumn fx:id="balanceColumn" text="Balance" />
-            </columns>
-        </TableView>
-        <Button layoutX="14.0" layoutY="430.0" text="Back" onAction="#onBackClick"/>
-        <Button layoutX="100.0" layoutY="430.0" text="Export CSV" onAction="#handleExportCSV"/>
+        <Button layoutX="14.0" layoutY="430.0" onAction="#onBackClick" text="Back" />
+      <GridPane layoutX="983.0" layoutY="-9.0" prefHeight="656.0" prefWidth="267.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="212.26666870117188" minHeight="10.0" prefHeight="155.73334350585938" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="232.9999755859375" minHeight="10.0" prefHeight="222.6666320800781" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="391.93335571289066" minHeight="10.0" prefHeight="390.46664428710943" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="391.93335571289066" minHeight="10.0" prefHeight="87.53335571289062" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+              <TableView fx:id="transactionTable" prefHeight="417.0" prefWidth="267.0" GridPane.rowIndex="2">
+                  <columns>
+                      <TableColumn fx:id="dateColumn" text="Date" />
+                      <TableColumn fx:id="amountColumn" text="Amount" />
+                      <TableColumn fx:id="balanceColumn" text="Balance" />
+                  </columns>
+              </TableView>
+              <Button onAction="#handleExportCSV" text="Export CSV" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
     </children>
 </AnchorPane>

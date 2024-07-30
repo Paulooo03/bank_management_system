@@ -2,9 +2,9 @@ position,Account number,username,password,Status,Date,Amount,Date,Amount,...
 
 admin,999717,Pogi,Pogi talaga,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
-manager,908134579,Mike Ehrmantraut,Pimento cheese,
+manager,908134579,Mike Ehrmantraut,Pimento cheese, active,,,,
 ,,,
-teller,8932475,Gus Fring,Mang Inasal,
+teller,8932475,Gus Fring,Mang Inasal, inactive,
 ,,,
 Client,12345,Walter White,Baby Blue,Inactive,2023-01-01,200,2023-01-02,-100,2023-01-03,-20,2023-01-04,70,2023-01-05,90
 Client,22228,Homelander,Milk,Inactive,2023-02-01,12308,2023-02-02,28930,2023-02-03,-2343,2023-02-04,-219
