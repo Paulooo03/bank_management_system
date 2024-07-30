@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
 <AnchorPane prefHeight="720" prefWidth="1280" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.TellerController">
     <children>
@@ -11,17 +10,20 @@
         <!-- TextField for entering Account Number -->
         <TextField fx:id="accountNumberTextField" layoutX="14.0" layoutY="44.0" promptText="Enter Account Number"/>
 
-        <!-- Button to view transaction history -->
-        <Button fx:id="viewTransactionHistoryButton" layoutX="14.0" layoutY="74.0" text="View Transaction History" onAction="#handleViewTransactionHistory"/>
+        <!-- Combined button to view account details and transaction history -->
+        <Button fx:id="viewClientButton" layoutX="14.0" layoutY="74.0" text="View Client" onAction="#handleViewClient"/>
 
-        <!-- Button to check account details -->
-        <Button fx:id="checkAccountDetailsButton" layoutX="14.0" layoutY="104.0" text="Check Account Details" onAction="#handleCheckAccountDetails"/>
+        <!-- Button to check account details (this can be removed now) -->
+        <!-- <Button fx:id="checkAccountDetailsButton" layoutX="14.0" layoutY="104.0" text="Check Account Details" onAction="#handleCheckAccountDetails"/> -->
 
         <!-- Button to transfer money -->
-        <Button fx:id="transferMoneyButton" layoutX="14.0" layoutY="134.0" text="Transfer Money" onAction="#handleTransferMoney"/>
+        <Button fx:id="transferMoneyButton" layoutX="14.0" layoutY="104.0" text="Transfer Money" onAction="#handleTransferMoney"/>
 
-        <!-- TextArea to display account details or transaction history -->
-        <TextArea fx:id="outputTextArea" layoutX="14.0" layoutY="164.0" prefHeight="400.0" prefWidth="400.0" wrapText="true"/>
+        <!-- Label to display account details -->
+        <Label fx:id="outputLabel" layoutX="14.0" layoutY="134.0" prefHeight="400.0" prefWidth="400.0" wrapText="true"/>
+
+        <!-- TextArea to display transaction history -->
+        <TextArea fx:id="transactionHistoryTextArea" layoutX="450.0" layoutY="44.0" prefHeight="400.0" prefWidth="800.0" wrapText="true" editable="false"/>
 
         <!-- Button to go back -->
         <Button layoutX="14.0" layoutY="580.0" mnemonicParsing="false" onAction="#handleBackButton" text="Back"/>

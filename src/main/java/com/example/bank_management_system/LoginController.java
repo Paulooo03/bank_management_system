@@ -59,7 +59,6 @@ public class LoginController {
 
         Account account = validateLogin(accountNumber, password);
         if (account == null) {
-            showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid account number or password. Please try again.");
             return;
         }
 
@@ -119,7 +118,16 @@ public class LoginController {
     private Account validateLogin(String accountNumber, String password) {
         for (Account account : accounts) {
             if (account.getAccountNumber().equals(accountNumber) && account.getPassword().equals(password)) {
-                return account;
+                // Bypass status check for admin
+                if (account.getPosition().equalsIgnoreCase("admin") || account.getStatus().equals("Active")) {
+                    return account;
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Login Failed", "Account inactive, contact manager or administrator.");
+                }
+            } else if ((!account.getAccountNumber().equals(accountNumber)) && account.getPassword().equals(password)) {
+                showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid account number or password. Please try again.");
+            } else if ((account.getAccountNumber().equals(accountNumber)) && (!account.getPassword().equals(password))) {
+                showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid account number or password. Please try again.");
             }
         }
         return null;

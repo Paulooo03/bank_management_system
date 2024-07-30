@@ -67,9 +67,9 @@
     <Text layoutX="82.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Send Money" wrappingWidth="75.00798034667969" />
     <Text layoutX="71.0" layoutY="347.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request Loan" wrappingWidth="75.00798034667969" />
     <TextField alignment="TOP_LEFT" focusTraversable="false" layoutX="1023.0" layoutY="125.0" prefHeight="506.0" prefWidth="198.0" />
-    <TextField layoutX="14.0" layoutY="203.0" prefHeight="41.0" prefWidth="198.0" promptText="PHP" />
-    <Button layoutX="85.0" layoutY="252.0" mnemonicParsing="false" text="SEND" />
-    <TextField layoutX="14.0" layoutY="155.0" prefHeight="41.0" prefWidth="198.0" promptText="Account Number" />
-    <TextField layoutX="10.0" layoutY="357.0" prefHeight="41.0" prefWidth="198.0" promptText="PHP" />
-    <Button layoutX="85.0" layoutY="405.0" mnemonicParsing="false" text="LOAN" />
+    <TextField fx:id="sendMoney" layoutX="14.0" layoutY="203.0" onAction="#sendMoney" prefHeight="41.0" prefWidth="198.0" promptText="PHP" />
+    <Button fx:id="sendMoneyButton" layoutX="85.0" layoutY="252.0" mnemonicParsing="false" onAction="#sendMoneyButton" text="SEND" />
+    <TextField fx:id="sendMoneyAccount" layoutX="14.0" layoutY="155.0" onAction="#sendMoneyAccount" prefHeight="41.0" prefWidth="198.0" promptText="Account Number" />
+    <TextField fx:id="requestMoney" layoutX="10.0" layoutY="357.0" onAction="#requestMoney" prefHeight="41.0" prefWidth="198.0" promptText="PHP" />
+    <Button fx:id="requestMoneyButton" layoutX="85.0" layoutY="405.0" mnemonicParsing="false" onAction="#requestMoneyButton" text="LOAN" />
 </AnchorPane>

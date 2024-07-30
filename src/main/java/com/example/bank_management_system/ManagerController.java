@@ -72,15 +72,45 @@ public class ManagerController {
             return;
         }
 
-        // Load transactions and calculate the balance
-        UserTransactionHistoryController controller = new UserTransactionHistoryController();
-        ObservableList<UserTransactionHistoryController.Transaction> transactions = controller.loadTransactions(accountNumber);
-        double balance = transactions.isEmpty() ? 0.0 : transactions.get(transactions.size() - 1).getBalance();
+        // Load the balance from the CSV file
+        double balance = loadAccountBalance(accountNumber);
 
         accountNumberLabel.setText(account.getAccountNumber());
         accountHolderLabel.setText(account.getAccountHolderName());
         balanceLabel.setText(String.format("PHP %.2f", balance));
         statusLabel.setText(account.getStatus());
+    }
+
+    private double loadAccountBalance(String accountNumber) {
+        double balance = 0.0;
+        String filePath = "src/main/resources/com/example/bank_management_system/bank_database.csv";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                // Ensure the row corresponds to the client account
+                if (values.length > 5 && "Client".equalsIgnoreCase(values[0]) && values[1].trim().equals(accountNumber)) {
+                    // Start reading transactions from index 5
+                    for (int i = 5; i < values.length; i += 3) {
+                        if (i + 1 < values.length) { // Ensure there's enough data for Date and Amount
+                            try {
+                                double amount = Double.parseDouble(values[i + 1].trim());
+                                balance += amount; // Update balance with the transaction amount
+                            } catch (NumberFormatException e) {
+                                System.err.println("Failed to parse amount: " + values[i + 1].trim());
+                            }
+                        }
+                    }
+                    break; // Break the loop once the account is found
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error reading account balance from file.");
+        }
+
+        return balance;
     }
 
     private void clearLabels() {

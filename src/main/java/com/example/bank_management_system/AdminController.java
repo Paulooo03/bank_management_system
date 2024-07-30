@@ -9,11 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -46,6 +42,9 @@ public class AdminController {
     private Label statusLabel;
 
     @FXML
+    private Label transactionHistoryLabel;
+
+    @FXML
     private TableView<Transaction> transactionsTableView;
 
     @FXML
@@ -65,12 +64,14 @@ public class AdminController {
     private Client currentClient;
 
     public static class Client {
+        String position;
         String username;
         String status;
         int accountNumber;
         List<Transaction> transactions;
 
-        public Client(String username, String status, int accountNumber, List<Transaction> transactions) {
+        public Client(String position, String username, String status, int accountNumber, List<Transaction> transactions) {
+            this.position = position;
             this.username = username;
             this.status = status;
             this.accountNumber = accountNumber;
@@ -92,6 +93,10 @@ public class AdminController {
             }
             return balance;
         }
+
+        public String getPosition() {
+            return position;
+        }
     }
 
     @FXML
@@ -109,6 +114,11 @@ public class AdminController {
         accountNumberTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             checkAccountStatusButton.setDisable(newValue.trim().isEmpty());
         });
+
+        // Set initial visibility
+        transactionsTableView.setVisible(false);
+        balanceLabel.setVisible(false);
+        transactionHistoryLabel.setVisible(false);
     }
 
     private void loadClients() {
@@ -117,10 +127,10 @@ public class AdminController {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if (numColumns == 0 && values.length >= 4 && "Client".equalsIgnoreCase(values[0])) {
+                if (numColumns == 0 && values.length >= 4) {
                     numColumns = values.length;
                 }
-                if (values.length >= 4 && "Client".equalsIgnoreCase(values[0])) {
+                if (values.length >= 4 && ("Client".equalsIgnoreCase(values[0]) || "Manager".equalsIgnoreCase(values[0]) || "Teller".equalsIgnoreCase(values[0]))) {
                     int accountNumber = Integer.parseInt(values[1].trim());
                     List<Transaction> transactions = new ArrayList<>();
 
@@ -135,7 +145,7 @@ public class AdminController {
                         }
                     }
 
-                    clients.add(new Client(values[2], values[4], accountNumber, transactions));
+                    clients.add(new Client(values[0], values[2], values[4], accountNumber, transactions));
                 }
             }
         } catch (IOException e) {
@@ -163,6 +173,11 @@ public class AdminController {
         // Load transactions and display in the TableView
         ObservableList<Transaction> transactionsObservableList = FXCollections.observableArrayList(client.getTransactions());
         transactionsTableView.setItems(transactionsObservableList);
+
+        // Make elements visible
+        transactionsTableView.setVisible(true);
+        balanceLabel.setVisible(true);
+        transactionHistoryLabel.setVisible(true);
     }
 
     private void updateButtonText(String status) {
@@ -196,7 +211,7 @@ public class AdminController {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",\\s*");
 
-                if (values.length >= 5 && "Client".equalsIgnoreCase(values[0])) {
+                if (values.length >= 5 && ("Client".equalsIgnoreCase(values[0]) || "Manager".equalsIgnoreCase(values[0]) || "Teller".equalsIgnoreCase(values[0]))) {
                     try {
                         int parsedAccountNumber = Integer.parseInt(values[1].trim());
                         if (parsedAccountNumber == currentClient.accountNumber) {

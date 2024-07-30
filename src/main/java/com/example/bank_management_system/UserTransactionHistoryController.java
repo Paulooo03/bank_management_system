@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -25,6 +26,12 @@ import java.io.IOException;
 
 public class UserTransactionHistoryController {
 
+    public TextField sendMoney;
+    public Button sendMoneyButton;
+    public TextField sendMoneyAccount;
+    public TextField requestMoney;
+    public Button requestMoneyButton;
+    public Text savings;
     @FXML
     private Text clientName;
     @FXML
@@ -140,6 +147,82 @@ public class UserTransactionHistoryController {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void sendMoney(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void sendMoneyButton(ActionEvent actionEvent) {
+        String accountNumber = sendMoneyAccount.getText().trim();
+        String filePath = "src/main/resources/com/example/bank_management_system/bank_database.csv";
+        String currentClientAccountNumber = sendMoneyAccount.getText().trim(); // Replace with the actual account number of the logged-in client
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            boolean accountFound = false;
+            String username = "";
+            ObservableList<String> otherClientAccounts = FXCollections.observableArrayList();
+
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+
+                // Check if the line corresponds to a client and is not the current client's account
+                if (values.length >= 6 && "client".equalsIgnoreCase(values[0]) && !values[1].trim().equals(currentClientAccountNumber)) {
+                    otherClientAccounts.add(values[1].trim()); // Add the account number to the list of other client accounts
+                }
+
+                // Check if the line corresponds to a client and matches the input account number
+                if (values.length >= 6 && "client".equalsIgnoreCase(values[0]) && values[1].trim().equals(accountNumber)) {
+                    username = values[2].trim(); // Assuming the username is in the 3rd column
+                    accountFound = true;
+                    break; // Stop searching after finding the account
+                }
+            }
+
+            if (accountFound) {
+                // Display the username, you can use a Text or Label to show this
+                System.out.println("Account found! Username: " + username);
+                // You can set the text to a Text/Label in your FXML to show to the user
+            } else {
+                System.out.println("Account not found.");
+            }
+
+            // Display the other client accounts (this could be in a list view or similar)
+            System.out.println("Other client accounts: " + otherClientAccounts);
+            // You may want to update a UI component with the otherClientAccounts list
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getUsernameByAccountNumber(String accountNumber) {
+        String filePath = "src/main/resources/com/example/bank_management_system/bank_database.csv";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+
+                // Check if the line corresponds to a client and matches the account number
+                if (values.length >= 6 && "Client".equalsIgnoreCase(values[0]) && values[1].trim().equals(accountNumber)) {
+                    return values[2].trim(); // Return the username
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null; // Account not found
+    }
+
+    public void sendMoneyAccount(ActionEvent actionEvent) {
+    }
+
+    public void requestMoney(ActionEvent actionEvent) {
+    }
+
+    public void requestMoneyButton(ActionEvent actionEvent) {
     }
 
     public static class Transaction {
