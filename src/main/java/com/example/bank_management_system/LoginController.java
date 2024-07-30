@@ -65,6 +65,9 @@ public class LoginController {
 
         // Check the position of the account and navigate accordingly
         switch (account.getPosition().toLowerCase()) {
+            case "admin":
+                navigateToAdminScreen(event);
+                break;
             case "manager":
                 navigateToManagerScreen(event);
                 break;
@@ -120,6 +123,20 @@ public class LoginController {
             }
         }
         return null;
+    }
+
+    private void navigateToAdminScreen(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("admin_view.fxml")));
+            Scene scene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(scene);
+            currentStage.setTitle("Admin Dashboard");
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load admin dashboard.");
+        }
     }
 
     private void navigateToManagerScreen(ActionEvent event) {
@@ -182,7 +199,6 @@ public class LoginController {
         return "Unknown"; // Default name if not found
     }
 
-
     private ObservableList<UserTransactionHistoryController.Transaction> loadTransactions(String accountNumber) {
         ObservableList<UserTransactionHistoryController.Transaction> transactions = FXCollections.observableArrayList();
         String filePath = "src/main/resources/com/example/bank_management_system/bank_database.csv";
@@ -192,13 +208,20 @@ public class LoginController {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 if (values.length >= 4 && "Client".equalsIgnoreCase(values[0]) && values[1].trim().equals(accountNumber)) {
-                    for (int i = 5; i < values.length; i += 2) {
-                        String date = values[i].trim();
-                        double amount = Double.parseDouble(values[i + 1].trim());
-                        double balance = transactions.isEmpty() ? amount : transactions.get(transactions.size() - 1).getBalance() + amount;
-                        transactions.add(new UserTransactionHistoryController.Transaction(date, amount, balance));
+                    // Start parsing transactions from the 6th index
+                    for (int i = 5; i < values.length; i += 3) {
+                        if (i + 2 < values.length) { // Ensure there are enough elements for Date, Amount, Description
+                            String date = values[i].trim();
+                            double amount = Double.parseDouble(values[i + 1].trim());
+                            String description = values[i + 2].trim();
+
+                            // Calculate the running balance
+                            double balance = transactions.isEmpty() ? amount : transactions.get(transactions.size() - 1).getBalance() + amount;
+
+                            transactions.add(new UserTransactionHistoryController.Transaction(date, amount, description, balance));
+                        }
                     }
-                    break; // Assuming account numbers are unique, stop after finding the correct account
+                    break; // Stop after finding the correct account
                 }
             }
         } catch (IOException e) {

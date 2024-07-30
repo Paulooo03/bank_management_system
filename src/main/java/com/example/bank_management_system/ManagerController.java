@@ -7,9 +7,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.collections.ObservableList;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -26,13 +27,22 @@ public class ManagerController {
     private TextField accountNumberTextField;
 
     @FXML
-    private TextArea accountDetailsTextArea;
+    private Label accountNumberLabel;
+
+    @FXML
+    private Label accountHolderLabel;
+
+    @FXML
+    private Label balanceLabel;
+
+    @FXML
+    private Label statusLabel;
 
     private List<Account> accounts;
 
     @FXML
     public void initialize() {
-        accountDetailsTextArea.setText("Please enter an account number to check its status.");
+        clearLabels();
         accountNumberTextField.setPromptText("Enter Account Number");
         checkAccountStatusButton.setDisable(true);
 
@@ -42,32 +52,42 @@ public class ManagerController {
 
         accounts = new ArrayList<>();
         try {
+            // Load accounts from both CSV files
             accounts.addAll(loadAccountsFromCSV("src/main/resources/com/example/bank_management_system/manager.csv", "manager"));
             accounts.addAll(loadAccountsFromCSV("src/main/resources/com/example/bank_management_system/bank_database.csv", "client"));
             System.out.println("Total accounts loaded: " + accounts.size()); // Debug statement
         } catch (IOException e) {
             e.printStackTrace();
-            accountDetailsTextArea.setText("Failed to load account data.");
+            accountNumberLabel.setText("Failed to load account data.");
         }
     }
 
     @FXML
     private void handleCheckAccountStatusButtonAction() {
-        String accountNumber = accountNumberTextField.getText();
-
+        String accountNumber = accountNumberTextField.getText().trim();
         Account account = getAccountDetails(accountNumber);
         if (account == null) {
-            accountDetailsTextArea.setText("Account not found.");
+            clearLabels();
+            accountNumberLabel.setText("Account not found.");
             return;
         }
 
-        StringBuilder details = new StringBuilder();
-        details.append("Account Number: ").append(account.getAccountNumber()).append("\n");
-        details.append("Account Holder: ").append(account.getAccountHolderName()).append("\n");
-        details.append("Balance: $").append(account.getBalance()).append("\n");
-        details.append("Status: ").append(account.getStatus()).append("\n\n");
+        // Load transactions and calculate the balance
+        UserTransactionHistoryController controller = new UserTransactionHistoryController();
+        ObservableList<UserTransactionHistoryController.Transaction> transactions = controller.loadTransactions(accountNumber);
+        double balance = transactions.isEmpty() ? 0.0 : transactions.get(transactions.size() - 1).getBalance();
 
-        accountDetailsTextArea.setText(details.toString());
+        accountNumberLabel.setText(account.getAccountNumber());
+        accountHolderLabel.setText(account.getAccountHolderName());
+        balanceLabel.setText(String.format("PHP %.2f", balance));
+        statusLabel.setText(account.getStatus());
+    }
+
+    private void clearLabels() {
+        accountNumberLabel.setText("");
+        accountHolderLabel.setText("");
+        balanceLabel.setText("");
+        statusLabel.setText("");
     }
 
     private List<Account> loadAccountsFromCSV(String filePath, String accountType) throws IOException {
@@ -77,11 +97,11 @@ public class ManagerController {
             while ((line = br.readLine()) != null) {
                 System.out.println("Reading line: " + line); // Debug statement
                 String[] values = line.split(",");
-                if (values.length > 4) {
+                if (values.length >= 5) { // Adjusted to match minimum expected columns
                     String accountNumber = values[1].trim();
                     String username = values[2].trim();
                     String password = values[3].trim();
-                    String status = values.length > 4 ? values[4].trim() : "";
+                    String status = values[4].trim();
                     double balance = 0.0;
 
                     if (values.length > 5 && isNumeric(values[5].trim())) {
@@ -92,7 +112,7 @@ public class ManagerController {
                         Account managerAccount = new Account(accountNumber, username, status, balance);
                         accounts.add(managerAccount);
                         System.out.println("Manager added: " + username + ", Status: " + status + ", Account Number: " + accountNumber);
-                    } else if ("client".equalsIgnoreCase(accountType)) {
+                    } else if ("client".equalsIgnoreCase(accountType) && "client".equalsIgnoreCase(values[0].trim())) {
                         Account clientAccount = new ClientAccount(accountNumber, username, status, balance);
                         accounts.add(clientAccount);
                         System.out.println("Client added: " + username + ", Status: " + status + ", Account Number: " + accountNumber);

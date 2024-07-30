@@ -11,12 +11,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +27,48 @@ public class AdminController {
     @FXML
     private AnchorPane clientPane;
 
+    @FXML
+    private TextField accountNumberTextField;
+
+    @FXML
+    private Button checkAccountStatusButton;
+
+    @FXML
+    private Label accountNumberLabel;
+
+    @FXML
+    private Label accountHolderLabel;
+
+    @FXML
+    private Label balanceLabel;
+
+    @FXML
+    private Label statusLabel;
+
+    @FXML
+    private TableView<Transaction> transactionsTableView;
+
+    @FXML
+    private TableColumn<Transaction, String> dateColumn;
+
+    @FXML
+    private TableColumn<Transaction, Double> amountColumn;
+
+    @FXML
+    private TableColumn<Transaction, String> descriptionColumn;
+
+    @FXML
+    private Button activateOrDeactivateButton;
+
     private final List<Client> clients = new ArrayList<>();
     private int numColumns = 0;
+    private Client currentClient;
 
     public static class Client {
         String username;
         String status;
         int accountNumber;
-        List<Transaction> transactions; // List of transactions
+        List<Transaction> transactions;
 
         public Client(String username, String status, int accountNumber, List<Transaction> transactions) {
             this.username = username;
@@ -48,38 +84,31 @@ public class AdminController {
         public int getAccountNumber() {
             return accountNumber;
         }
+
+        public double getBalance() {
+            double balance = 0;
+            for (Transaction transaction : transactions) {
+                balance += transaction.getAmount(); // Sum amounts for balance
+            }
+            return balance;
+        }
     }
 
     @FXML
     public void initialize() {
+        clearLabels();
+        accountNumberTextField.setPromptText("Enter Account Number");
+        checkAccountStatusButton.setDisable(true);
         loadClients();
-        loadTransactions();
 
-        // Debug: Print number of clients read
-        System.out.println("Number of clients read: " + clients.size());
-        System.out.println("Number of columns per client: " + numColumns);
+        // Set up the TableView columns
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("type")); // Updated to match CSV
 
-        // Dynamically create UI elements based on the number of clients
-        for (int i = 0; i < clients.size(); i++) {
-            Client client = clients.get(i);
-            Label nameLabel = new Label(client.username);
-            nameLabel.setLayoutX(31.0);
-            nameLabel.setLayoutY(55.0 + i * 33.0);
-            Label statusLabel = new Label(client.status);
-            statusLabel.setLayoutX(235.0);
-            statusLabel.setLayoutY(55.0 + i * 33.0);
-            Button viewButton = new Button("view");
-            viewButton.setLayoutX(354.0);
-            viewButton.setLayoutY(51.0 + i * 33.0);
-            final int clientIndex = i;
-            viewButton.setOnAction(event -> onViewClick(clientIndex));
-
-            clientPane.getChildren().addAll(nameLabel, statusLabel, viewButton);
-        }
-
-        // Adjust AnchorPane height based on the number of clients
-        double newHeight = 55.0 + clients.size() * 33.0 + 20.0; // Adding extra space
-        clientPane.setPrefHeight(newHeight);
+        accountNumberTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            checkAccountStatusButton.setDisable(newValue.trim().isEmpty());
+        });
     }
 
     private void loadClients() {
@@ -87,16 +116,26 @@ public class AdminController {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                System.out.println("Reading line: " + line); // Debug statement
                 String[] values = line.split(",");
-                // Determine the number of columns in the first data line
                 if (numColumns == 0 && values.length >= 4 && "Client".equalsIgnoreCase(values[0])) {
                     numColumns = values.length;
                 }
                 if (values.length >= 4 && "Client".equalsIgnoreCase(values[0])) {
                     int accountNumber = Integer.parseInt(values[1].trim());
-                    clients.add(new Client(values[2], values[4], accountNumber, new ArrayList<>()));
-                    System.out.println("Added client: " + values[2] + ", status: " + values[4]); // Debug statement
+                    List<Transaction> transactions = new ArrayList<>();
+
+                    // Parsing transactions
+                    for (int i = 5; i < values.length; i += 3) { // Updated to read date, amount, and type
+                        if (i + 2 < values.length && !values[i].isEmpty() && !values[i + 1].isEmpty()) {
+                            String date = values[i].trim();
+                            double amount = Double.parseDouble(values[i + 1].trim());
+                            String type = values[i + 2].trim();
+
+                            transactions.add(new Transaction(date, amount, type)); // Adjust transaction type accordingly
+                        }
+                    }
+
+                    clients.add(new Client(values[2], values[4], accountNumber, transactions));
                 }
             }
         } catch (IOException e) {
@@ -104,70 +143,110 @@ public class AdminController {
         }
     }
 
-    private void loadTransactions() {
+    @FXML
+    private void handleCheckAccountStatusButtonAction() {
+        String accountNumber = accountNumberTextField.getText();
+        Client client = getClientDetails(accountNumber);
+        currentClient = client; // Store the current client
+        if (client == null) {
+            clearLabels();
+            accountNumberLabel.setText("Account not found.");
+            return;
+        }
+
+        accountNumberLabel.setText(String.valueOf(client.getAccountNumber()));
+        accountHolderLabel.setText(client.username);
+        statusLabel.setText(client.status);
+        balanceLabel.setText(String.format("%.2f", client.getBalance()));
+        updateButtonText(client.status);
+
+        // Load transactions and display in the TableView
+        ObservableList<Transaction> transactionsObservableList = FXCollections.observableArrayList(client.getTransactions());
+        transactionsTableView.setItems(transactionsObservableList);
+    }
+
+    private void updateButtonText(String status) {
+        if ("Active".equalsIgnoreCase(status)) {
+            activateOrDeactivateButton.setText("Deactivate");
+        } else {
+            activateOrDeactivateButton.setText("Activate");
+        }
+    }
+
+    @FXML
+    public void handleActivateOrDeactivateButtonAction(ActionEvent actionEvent) {
+        if (currentClient != null) {
+            if ("Active".equalsIgnoreCase(currentClient.status)) {
+                currentClient.status = "Inactive";
+            } else {
+                currentClient.status = "Active";
+            }
+            updateButtonText(currentClient.status);
+            updateCSVStatus();
+            statusLabel.setText(currentClient.status);
+        }
+    }
+
+    private void updateCSVStatus() {
         String filePath = "src/main/resources/com/example/bank_management_system/bank_database.csv";
+        List<String> lines = new ArrayList<>();
+
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                if (values.length >= 6 && "Client".equalsIgnoreCase(values[0])) {
-                    int accountNumber = Integer.parseInt(values[1].trim());
+                String[] values = line.split(",\\s*");
 
-                    // Extract transaction values from CSV line, assuming dates are in the CSV
-                    List<Transaction> transactionObjects = new ArrayList<>();
-                    for (int i = 5; i < values.length; i++) {
-                        String[] transactionParts = values[i].split(";");
-                        if (transactionParts.length == 3) {
-                            String date = transactionParts[0].trim();
-                            double amount = Double.parseDouble(transactionParts[1].trim());
-                            String description = transactionParts[2].trim();
-                            transactionObjects.add(new Transaction(date, amount, description));
+                if (values.length >= 5 && "Client".equalsIgnoreCase(values[0])) {
+                    try {
+                        int parsedAccountNumber = Integer.parseInt(values[1].trim());
+                        if (parsedAccountNumber == currentClient.accountNumber) {
+                            values[4] = currentClient.status; // Update status in CSV
+                            line = String.join(",", values);
                         }
-                    }
-
-                    // Find the client by account number and add transactions
-                    for (Client client : clients) {
-                        if (client.getAccountNumber() == accountNumber) {
-                            client.transactions.addAll(transactionObjects);
-                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Skipping line due to number format issue: " + line);
                     }
                 }
+                lines.add(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            for (String updatedLine : lines) {
+                bw.write(updatedLine);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void clearLabels() {
+        accountNumberLabel.setText("");
+        accountHolderLabel.setText("");
+        balanceLabel.setText("");
+        statusLabel.setText("");
+    }
+
+    private Client getClientDetails(String accountNumber) {
+        for (Client client : clients) {
+            if (String.valueOf(client.getAccountNumber()).equals(accountNumber)) {
+                return client;
+            }
+        }
+        return null;
     }
 
     @FXML
     private void handleBackButton(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("user_selection.fxml"));
-            Scene scene = new Scene(root, 1280, 720);
+            Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Scene scene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             currentStage.setScene(scene);
-            currentStage.setTitle("Le Bank Management System");
             currentStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void onViewClick(int clientIndex) {
-        Client selectedClient = clients.get(clientIndex);
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("transaction_history.fxml"));
-            Parent root = loader.load();
-
-            TransactionHistoryController controller = loader.getController();
-            ObservableList<Transaction> transactionsObservableList = FXCollections.observableArrayList(selectedClient.getTransactions());
-            controller.setTransactions(transactionsObservableList);
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Transaction History for " + selectedClient.username);
-            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

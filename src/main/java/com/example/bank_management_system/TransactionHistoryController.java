@@ -30,6 +30,8 @@ public class TransactionHistoryController {
     @FXML
     private TableColumn<Transaction, Double> balanceColumn;
     @FXML
+    private TableColumn<Transaction, String> descriptionColumn;
+    @FXML
     private Button activateOrDeactivate;
 
     private ObservableList<Transaction> transactions;
@@ -43,6 +45,7 @@ public class TransactionHistoryController {
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
         balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description")); // Ensure this is set
     }
 
     public void setTransactions(ObservableList<Transaction> transactions) {
@@ -85,10 +88,12 @@ public class TransactionHistoryController {
         if (file != null) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write("ClientUsername,Date,Type,Amount,Balance\n");
+                double runningBalance = 0; // Initialize running balance
                 for (Transaction transaction : transactions) {
+                    runningBalance += transaction.getAmount(); // Update running balance
                     writer.write(String.format("%s,%s,%s,%.2f,%.2f\n",
                             username, transaction.getDate(), transaction.getType(),
-                            transaction.getAmount(), transaction.getBalance()));
+                            transaction.getAmount(), runningBalance)); // Write running balance
                 }
                 writer.flush();
             } catch (IOException e) {
@@ -135,7 +140,7 @@ public class TransactionHistoryController {
                     try {
                         int parsedAccountNumber = Integer.parseInt(values[1].trim());
                         if (parsedAccountNumber == accountNumber) {
-                            values[4] = status;
+                            values[4] = status; // Update status in CSV
                             line = String.join(",", values);
                         }
                     } catch (NumberFormatException e) {
@@ -160,22 +165,13 @@ public class TransactionHistoryController {
 
     public static class Transaction {
         private final String date;
-        private String type = "";
+        private final String type;
         private final double amount;
-        private double balance = 0;
 
-        public Transaction(String date, String type, double amount, double balance) {
+        public Transaction(String date, double amount, String type) {
             this.date = date;
-            this.type = type;
             this.amount = amount;
-            this.balance = balance;
-        }
-
-        public Transaction(String date, double amount, String description) {
-            this.date = date;
             this.type = type;
-            this.amount = amount;
-            this.balance = balance;
         }
 
         public String getDate() {
@@ -191,7 +187,7 @@ public class TransactionHistoryController {
         }
 
         public double getBalance() {
-            return balance;
+            return amount; // Adjust this if you want a specific balance calculation
         }
     }
 }

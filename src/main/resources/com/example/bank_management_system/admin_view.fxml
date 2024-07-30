@@ -6,7 +6,33 @@
 <AnchorPane prefHeight="720" prefWidth="1280" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.AdminController">
     <children>
         <Label layoutX="14.0" layoutY="14.0" text="Admin Dashboard" />
-        <AnchorPane fx:id="clientPane" layoutX="14.0" layoutY="44.0" prefHeight="720" prefWidth="1280"/>
-        <Button layoutX="14.0" layoutY="280.0" mnemonicParsing="false" onAction="#handleBackButton" text="Back" />
+        <TextField fx:id="accountNumberTextField" layoutX="14.0" layoutY="44.0" promptText="Enter Account Number"/>
+        <Button fx:id="checkAccountStatusButton" layoutX="14.0" layoutY="74.0" text="Check Account Status" onAction="#handleCheckAccountStatusButtonAction"/>
+
+        <Label layoutX="14.0" layoutY="104.0" text="Account Number:" />
+        <Label fx:id="accountNumberLabel" layoutX="150.0" layoutY="104.0" />
+
+        <Label layoutX="14.0" layoutY="134.0" text="Account Holder:" />
+        <Label fx:id="accountHolderLabel" layoutX="150.0" layoutY="134.0" />
+
+        <Label layoutX="14.0" layoutY="164.0" text="Balance:" />
+        <Label fx:id="balanceLabel" layoutX="150.0" layoutY="164.0" />
+
+        <Label layoutX="14.0" layoutY="194.0" text="Status:" />
+        <Label fx:id="statusLabel" layoutX="150.0" layoutY="194.0" />
+
+        <Button fx:id="activateOrDeactivateButton" layoutX="14.0" layoutY="224.0" text="Activate/Deactivate" onAction="#handleActivateOrDeactivateButtonAction"/>
+
+        <Label layoutX="14.0" layoutY="254.0" text="Transaction History:" />
+
+        <TableView fx:id="transactionsTableView" layoutX="14.0" layoutY="280.0" prefWidth="600" prefHeight="200">
+            <columns>
+                <TableColumn fx:id="dateColumn" prefWidth="138.66668701171875" text="Date" />
+                <TableColumn fx:id="amountColumn" prefWidth="162.4000244140625" text="Amount" />
+                <TableColumn fx:id="descriptionColumn" prefWidth="200.0" text="Description" />
+            </columns>
+        </TableView>
+
+        <Button layoutX="14.0" layoutY="490.0" mnemonicParsing="false" onAction="#handleBackButton" text="Back" />
     </children>
 </AnchorPane>
