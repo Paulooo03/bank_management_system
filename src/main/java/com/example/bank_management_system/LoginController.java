@@ -42,14 +42,14 @@ public class LoginController {
         accounts = new ArrayList<>();
         try {
             accounts.addAll(loadAccountsFromCSV("src/main/resources/com/example/bank_management_system/bank_database.csv"));
-            System.out.println("Total accounts loaded: " + accounts.size()); // Debug statement
+            System.out.println("Total accounts loaded: " + accounts.size());
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to load account data.");
         }
 
         loginButton.setOnAction(this::handleLoginButtonAction);
-        debugButton.setOnAction(this::handleDebugButtonAction); // Corrected method reference
+        debugButton.setOnAction(this::handleDebugButtonAction);
     }
 
     @FXML
@@ -62,7 +62,6 @@ public class LoginController {
             return;
         }
 
-        // Check the position of the account and navigate accordingly
         switch (account.getPosition().toLowerCase()) {
             case "admin":
                 navigateToAdminScreen(event);
@@ -74,13 +73,13 @@ public class LoginController {
                 navigateToTellerScreen(event);
                 break;
             default:
-                showUserTransactionHistory(accountNumber, event);
+                showUserTransactionHistory(account.getAccountNumber(), event);
                 break;
         }
     }
 
     @FXML
-    private void handleDebugButtonAction(ActionEvent event) { // Renamed method
+    private void handleDebugButtonAction(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("user_selection.fxml")));
             Scene scene = new Scene(root, 1280, 720);
@@ -118,7 +117,6 @@ public class LoginController {
     private Account validateLogin(String accountNumber, String password) {
         for (Account account : accounts) {
             if (account.getAccountNumber().equals(accountNumber) && account.getPassword().equals(password)) {
-                // Bypass status check for admin
                 if (account.getPosition().equalsIgnoreCase("admin") || account.getStatus().equals("Active")) {
                     return account;
                 } else {
@@ -183,7 +181,10 @@ public class LoginController {
             UserTransactionHistoryController controller = loader.getController();
             ObservableList<UserTransactionHistoryController.Transaction> transactions = loadTransactions(accountNumber);
 
-            // You need to pass both transactions and clientName
+            // Set current client account number in the controller
+            controller.setCurrentClientAccountNumber(accountNumber);
+
+            // Pass transactions and clientName
             String clientName = getClientNameFromAccount(accountNumber);
             controller.setTransactions(transactions, clientName);
 
@@ -201,10 +202,10 @@ public class LoginController {
     private String getClientNameFromAccount(String accountNumber) {
         for (Account account : accounts) {
             if (account.getAccountNumber().equals(accountNumber)) {
-                return account.getUsername(); // or however you want to retrieve the client name
+                return account.getUsername();
             }
         }
-        return "Unknown"; // Default name if not found
+        return "Unknown";
     }
 
     private ObservableList<UserTransactionHistoryController.Transaction> loadTransactions(String accountNumber) {
@@ -216,20 +217,18 @@ public class LoginController {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 if (values.length >= 4 && "Client".equalsIgnoreCase(values[0]) && values[1].trim().equals(accountNumber)) {
-                    // Start parsing transactions from the 6th index
                     for (int i = 5; i < values.length; i += 3) {
-                        if (i + 2 < values.length) { // Ensure there are enough elements for Date, Amount, Description
+                        if (i + 2 < values.length) {
                             String date = values[i].trim();
                             double amount = Double.parseDouble(values[i + 1].trim());
                             String description = values[i + 2].trim();
 
-                            // Calculate the running balance
                             double balance = transactions.isEmpty() ? amount : transactions.get(transactions.size() - 1).getBalance() + amount;
 
                             transactions.add(new UserTransactionHistoryController.Transaction(date, amount, description, balance));
                         }
                     }
-                    break; // Stop after finding the correct account
+                    break;
                 }
             }
         } catch (IOException e) {

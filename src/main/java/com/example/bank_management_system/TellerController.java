@@ -117,12 +117,11 @@ public class TellerController {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                // Skip all columns before "Status"
                 if (values.length >= 5 && "Client".equalsIgnoreCase(values[0])) {
                     String accNum = values[1].trim();
                     if (accNum.equals(accountNumber)) {
                         String accountHolderName = values[2].trim();
-                        // Skip the status column
+                        String status = values[4].trim(); // Add this line to get the status
                         double balance = 0.0;
 
                         // Process transactions, starting from the Date after Status
@@ -140,7 +139,7 @@ public class TellerController {
                             }
                         }
 
-                        return new Account(accNum, accountHolderName, "", balance); // Assuming status is skipped
+                        return new Account(accNum, accountHolderName, status, balance); // Include status here
                     }
                 }
             }

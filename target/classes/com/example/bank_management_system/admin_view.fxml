@@ -23,7 +23,7 @@
 
         <Button fx:id="activateOrDeactivateButton" layoutX="14.0" layoutY="224.0" text="Activate/Deactivate" onAction="#handleActivateOrDeactivateButtonAction"/>
 
-        <Label layoutX="14.0" layoutY="254.0" text="Transaction History:" />
+        <Label fx:id="transactionHistoryLabel" layoutX="14.0" layoutY="254.0" text="Transaction History:" />
 
         <TableView fx:id="transactionsTableView" layoutX="14.0" layoutY="280.0" prefWidth="600" prefHeight="200">
             <columns>
