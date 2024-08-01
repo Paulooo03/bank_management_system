@@ -53,9 +53,10 @@
         <VBox fx:id="transferMoneyBox" layoutX="38.0" layoutY="424.0" prefHeight="130.0" prefWidth="391.0" spacing="10" visible="false">
             <children>
                 <TextField fx:id="amountTextField" promptText="Amount" />
-                <TextField fx:id="operationTextField" promptText="Operation (e.g., Transfer)" />
+                <TextField fx:id="operationTextField" promptText="Operation" />
                 <Button layoutX="2.0" layoutY="450.0" onAction="#handleSubmitTransfer" text="Submit" />
                 <Button layoutX="5.0" layoutY="450.0" onAction="#handleCancelTransfer" text="Cancel" />
+                <Label fx:id="instructionLabel" text="Enter operation (Transfer, Loan, Deposit, Withdraw)" />
             </children>
         </VBox>
     </children>
