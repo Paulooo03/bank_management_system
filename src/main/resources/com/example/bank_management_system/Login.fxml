@@ -60,6 +60,5 @@
                 </Button>
             </children>
         </GridPane>
-        <Button id="debugButton" fx:id="debugButton" layoutX="23.0" layoutY="681.0" mnemonicParsing="false" onAction="#handleDebugButtonAction" text="Debug" />
     </children>
 </AnchorPane>

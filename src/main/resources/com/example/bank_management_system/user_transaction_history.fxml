@@ -42,24 +42,13 @@
           <Font size="47.0" />
         </font>
     </Text>
-    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#348199" height="140.0" layoutX="248.0" layoutY="124.0" stroke="WHITE" strokeType="INSIDE" width="391.0" />
-    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1c86a9" height="140.0" layoutX="670.0" layoutY="125.0" stroke="WHITE" strokeType="INSIDE" width="289.0" />
-    <Text fill="WHITE" layoutX="269.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Balance" wrappingWidth="145.87002563476562">
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#348199" height="140.0" layoutX="283.0" layoutY="127.0" stroke="WHITE" strokeType="INSIDE" width="452.0" />
+    <Text fill="WHITE" layoutX="304.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Balance" wrappingWidth="145.87002563476562">
         <font>
           <Font name="Century Gothic" size="29.0" />
         </font>
     </Text>
-    <Text fill="WHITE" layoutX="691.0" layoutY="164.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Savings" wrappingWidth="145.87002563476562">
-        <font>
-          <Font name="Century Gothic" size="29.0" />
-        </font>
-    </Text>
-    <Text fx:id="balance" fill="WHITE" layoutX="269.0" layoutY="223.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PHP" wrappingWidth="364.2700500488281">
-        <font>
-          <Font name="Century Gothic" size="45.0" />
-        </font>
-    </Text>
-    <Text fx:id="savings" fill="WHITE" layoutX="691.0" layoutY="223.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PHP" wrappingWidth="264.2699890136719">
+    <Text fx:id="balance" fill="WHITE" layoutX="304.0" layoutY="220.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PHP" wrappingWidth="415.4700622558594">
         <font>
           <Font name="Century Gothic" size="45.0" />
         </font>
@@ -68,8 +57,8 @@
     <Text layoutX="71.0" layoutY="347.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request Loan" wrappingWidth="75.00798034667969" />
     <TextField alignment="TOP_LEFT" focusTraversable="false" layoutX="1023.0" layoutY="125.0" prefHeight="506.0" prefWidth="198.0" />
     <TextField fx:id="sendMoney" layoutX="14.0" layoutY="203.0" onAction="#sendMoney" prefHeight="41.0" prefWidth="198.0" promptText="PHP" />
-    <Button fx:id="sendMoneyButton" layoutX="85.0" layoutY="252.0" mnemonicParsing="false" onAction="#sendMoneyButton" text="SEND" />
+    <Button fx:id="sendMoneyButton" layoutX="85.0" layoutY="252.0" mnemonicParsing="false" onAction="#sendMoneyButton" text="Send" />
     <TextField fx:id="sendMoneyAccount" layoutX="14.0" layoutY="155.0" onAction="#sendMoneyAccount" prefHeight="41.0" prefWidth="198.0" promptText="Account Number" />
     <TextField fx:id="requestMoney" layoutX="10.0" layoutY="357.0" onAction="#requestMoney" prefHeight="41.0" prefWidth="198.0" promptText="PHP" />
-    <Button fx:id="requestMoneyButton" layoutX="85.0" layoutY="405.0" mnemonicParsing="false" onAction="#requestMoneyButton" text="LOAN" />
+    <Button fx:id="requestMoneyButton" layoutX="85.0" layoutY="405.0" mnemonicParsing="false" onAction="#requestMoneyButton" text="Loan" />
 </AnchorPane>

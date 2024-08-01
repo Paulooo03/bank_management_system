@@ -42,14 +42,13 @@ public class LoginController {
         accounts = new ArrayList<>();
         try {
             accounts.addAll(loadAccountsFromCSV("src/main/resources/com/example/bank_management_system/bank_database.csv"));
-            System.out.println("Total accounts loaded: " + accounts.size());
+            System.out.println("Total accounts loaded: " + (accounts.size() - 1 ));
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to load account data.");
         }
 
         loginButton.setOnAction(this::handleLoginButtonAction);
-        debugButton.setOnAction(this::handleDebugButtonAction);
     }
 
     @FXML
@@ -75,21 +74,6 @@ public class LoginController {
             default:
                 showUserTransactionHistory(account.getAccountNumber(), event);
                 break;
-        }
-    }
-
-    @FXML
-    private void handleDebugButtonAction(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("user_selection.fxml")));
-            Scene scene = new Scene(root, 1280, 720);
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.setTitle("Le Bank Management System");
-            currentStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load user selection screen.");
         }
     }
 

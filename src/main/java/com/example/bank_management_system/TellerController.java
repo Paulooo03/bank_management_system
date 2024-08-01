@@ -20,8 +20,10 @@ import java.util.Optional;
 
 public class TellerController {
 
-    public TextArea transactionHistoryTextArea;
-    public Button viewClientButton;
+    @FXML
+    private TextArea transactionHistoryTextArea;
+    @FXML
+    private Button viewClientButton;
     @FXML
     private TextField accountNumberTextField;
     @FXML
@@ -34,10 +36,13 @@ public class TellerController {
     private TextField amountTextField;
     @FXML
     private TextField operationTextField;
+    @FXML
+    private Label instructionLabel; // Add this line
 
     @FXML
     private void handleTransferMoney(ActionEvent event) {
         transferMoneyBox.setVisible(true);
+        instructionLabel.setVisible(true); // Show the instruction label
     }
 
     @FXML
@@ -82,6 +87,7 @@ public class TellerController {
                             operation.substring(0, 1).toUpperCase() + operation.substring(1), amount, accountNumber));
 
             transferMoneyBox.setVisible(false);
+            instructionLabel.setVisible(false); // Hide the instruction label
             amountTextField.clear();
             operationTextField.clear();
         } catch (NumberFormatException e) {
@@ -95,6 +101,7 @@ public class TellerController {
     @FXML
     private void handleCancelTransfer(ActionEvent event) {
         transferMoneyBox.setVisible(false);
+        instructionLabel.setVisible(false); // Hide the instruction label
         amountTextField.clear();
         operationTextField.clear();
     }
