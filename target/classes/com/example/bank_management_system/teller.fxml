@@ -1,31 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720" prefWidth="1280" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.TellerController">
+<AnchorPane prefHeight="720" prefWidth="1280" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.TellerController">
     <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#145c9e" height="254.0" layoutX="21.0" layoutY="141.0" opacity="0.51" stroke="WHITE" strokeType="INSIDE" strokeWidth="0.0" width="425.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#87b0d7" height="92.0" layoutX="50.0" layoutY="44.0" opacity="0.51" stroke="WHITE" strokeType="INSIDE" strokeWidth="0.0" width="366.0" />
         <Label layoutX="14.0" layoutY="14.0" text="Teller Dashboard" />
 
         <!-- TextField for entering Account Number -->
-        <TextField fx:id="accountNumberTextField" layoutX="14.0" layoutY="44.0" promptText="Enter Account Number"/>
+        <TextField fx:id="accountNumberTextField" layoutX="107.0" layoutY="57.0" prefHeight="36.0" prefWidth="234.0" promptText="Enter Account Number" />
 
         <!-- Combined button to view account details and transaction history -->
-        <Button fx:id="viewClientButton" layoutX="14.0" layoutY="74.0" text="View Client" onAction="#handleViewClient"/>
+        <Button fx:id="viewClientButton" layoutX="107.0" layoutY="100.0" onAction="#handleViewClient" text="View Client">
+         <font>
+            <Font name="Century Gothic" size="12.0" />
+         </font></Button>
 
         <!-- Button to check account details (this can be removed now) -->
         <!-- <Button fx:id="checkAccountDetailsButton" layoutX="14.0" layoutY="104.0" text="Check Account Details" onAction="#handleCheckAccountDetails"/> -->
 
         <!-- Button to transfer money -->
-        <Button fx:id="transferMoneyButton" layoutX="14.0" layoutY="104.0" text="Transfer Money" onAction="#handleTransferMoney"/>
+        <Button fx:id="transferMoneyButton" layoutX="241.0" layoutY="100.0" onAction="#handleTransferMoney" text="Transfer Money">
+         <font>
+            <Font name="Century Gothic" size="12.0" />
+         </font></Button>
 
         <!-- Label to display account details -->
-        <Label fx:id="outputLabel" layoutX="14.0" layoutY="134.0" prefHeight="400.0" prefWidth="400.0" wrapText="true"/>
+        <Label fx:id="outputLabel" alignment="CENTER" layoutX="24.0" layoutY="159.0" prefHeight="218.0" prefWidth="418.0" wrapText="true">
+         <font>
+            <Font name="Century Gothic" size="24.0" />
+         </font></Label>
 
         <!-- TextArea to display transaction history -->
-        <TextArea fx:id="transactionHistoryTextArea" layoutX="450.0" layoutY="44.0" prefHeight="400.0" prefWidth="800.0" wrapText="true" editable="false"/>
+        <TextArea fx:id="transactionHistoryTextArea" editable="false" layoutX="450.0" layoutY="44.0" prefHeight="668.0" prefWidth="800.0" wrapText="true">
+         <font>
+            <Font name="Century Gothic" size="20.0" />
+         </font></TextArea>
 
         <!-- Button to go back -->
-        <Button layoutX="14.0" layoutY="580.0" mnemonicParsing="false" onAction="#handleBackButton" text="Back"/>
+        <Button layoutX="31.0" layoutY="668.0" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="26.0" prefWidth="130.0" text="&lt;&lt;&lt;       Log out">
+         <font>
+            <Font name="Century Gothic" size="12.0" />
+         </font></Button>
+      <ImageView fitHeight="498.0" fitWidth="557.0" layoutX="587.0" layoutY="129.0" opacity="0.16" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Logo.png" />
+         </image>
+      </ImageView>
     </children>
 </AnchorPane>

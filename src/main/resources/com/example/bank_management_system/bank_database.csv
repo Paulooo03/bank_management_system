@@ -6,7 +6,7 @@ manager,696969,Mike Ehrmantraut,696969, Active,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 teller,8932475,Gus Fring,Mang Inasal,Active
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Client,12345,Walter White,Baby Blue,Active,2023-01-01,200,loan,2023-01-02,-100,send,2023-01-03,-20,send,2023-01-04,70,loan,2023-01-05,90,loan,2023-01-05,-90,send,2023-01-05,90,loan,2024-07-30,50.0,Deposit,2024-07-30,50.0,Transfer,2024-07-31,-50.0,Withdrawal,2024-07-31,-100.0,Send,2024-07-31,1000.0,Receive,2024-07-31,10.0,Loaned Money,2024-07-31,10.0,Loaned Money
+Client,12345,Walter White,Baby Blue,Active,2023-01-01,200,loan,2023-01-02,-100,send,2023-01-03,-20,send,2023-01-04,70,loan,2023-01-05,90,loan,2023-01-05,-90,send,2023-01-05,90,loan,2024-07-30,50.0,Deposit,2024-07-30,50.0,Transfer,2024-07-31,-50.0,Withdrawal,2024-07-31,-100.0,Send,2024-07-31,1000.0,Receive,2024-07-31,10.0,Loaned Money,2024-07-31,10.0,Loaned Money,2024-07-31,1111.0,Loaned Money,2024-07-31,1111.0,Loaned Money
 Client,22228,Homelander,Milk,Active,2023-02-01,12308,loan,2023-02-02,28930,loan,2023-02-03,-2343,send,2023-02-04,-219,send,2024-07-30,50.0,loan,2024-07-30,6.0,loan,2024-07-30,-50.0,Withdrawal,2024-07-31,-1000.0,Send
 Client,33344,Elon Musk,Tesla,Active,2023-03-01,123789,loan,2023-03-02,-237983,send,2023-03-03,237489,loan,2023-03-04,21874,loan,2024-07-30,1.0,loan,2024-07-30,1.0,loan,2024-07-30,-50.0,Withdrawal,2024-07-31,-1000.0,Send,2024-07-31,100.0,Loaned Money
 Client,55557,Ella,Genshin,Active,2023-04-01,2389,loan,2023-04-02,-823947,send,2023-04-03,29374,loan,2023-04-04,-203487,send,2024-07-30,100.0,Transfer,2024-07-30,40.0,Deposit,2024-07-31,1000.0,Receive,2024-07-31,99400.0,Loaned Money
