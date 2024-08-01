@@ -10,35 +10,32 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.collections.ObservableList;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ManagerController {
 
     @FXML
+    private Button activateOrDeactivate;
+    @FXML
     private Button checkAccountStatusButton;
-
     @FXML
     private TextField accountNumberTextField;
-
     @FXML
     private Label accountNumberLabel;
-
     @FXML
     private Label accountHolderLabel;
-
     @FXML
     private Label balanceLabel;
-
     @FXML
     private Label statusLabel;
 
     private List<Account> accounts;
+    private static final String CSV_FILE_PATH = "src/main/resources/com/example/bank_management_system/bank_database.csv";
 
     @FXML
     public void initialize() {
@@ -52,9 +49,7 @@ public class ManagerController {
 
         accounts = new ArrayList<>();
         try {
-            // Load accounts from both CSV files
-            accounts.addAll(loadAccountsFromCSV("src/main/resources/com/example/bank_management_system/manager.csv", "manager"));
-            accounts.addAll(loadAccountsFromCSV("src/main/resources/com/example/bank_management_system/bank_database.csv", "client"));
+            accounts.addAll(loadAccountsFromCSV(CSV_FILE_PATH, "client"));
             System.out.println("Total accounts loaded: " + accounts.size()); // Debug statement
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,40 +64,45 @@ public class ManagerController {
         if (account == null) {
             clearLabels();
             accountNumberLabel.setText("Account not found.");
+            activateOrDeactivate.setVisible(false); // Hide button if account is not found
             return;
         }
 
-        // Load the balance from the CSV file
         double balance = loadAccountBalance(accountNumber);
 
         accountNumberLabel.setText(account.getAccountNumber());
         accountHolderLabel.setText(account.getAccountHolderName());
         balanceLabel.setText(String.format("PHP %.2f", balance));
         statusLabel.setText(account.getStatus());
+
+        // Update the button label and make it visible
+        if ("Active".equalsIgnoreCase(account.getStatus())) {
+            activateOrDeactivate.setText("Deactivate");
+        } else {
+            activateOrDeactivate.setText("Activate");
+        }
+        activateOrDeactivate.setVisible(true); // Show button when account is found
     }
 
     private double loadAccountBalance(String accountNumber) {
         double balance = 0.0;
-        String filePath = "src/main/resources/com/example/bank_management_system/bank_database.csv";
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(CSV_FILE_PATH))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                // Ensure the row corresponds to the client account
                 if (values.length > 5 && "Client".equalsIgnoreCase(values[0]) && values[1].trim().equals(accountNumber)) {
-                    // Start reading transactions from index 5
                     for (int i = 5; i < values.length; i += 3) {
-                        if (i + 1 < values.length) { // Ensure there's enough data for Date and Amount
+                        if (i + 1 < values.length) {
                             try {
                                 double amount = Double.parseDouble(values[i + 1].trim());
-                                balance += amount; // Update balance with the transaction amount
+                                balance += amount;
                             } catch (NumberFormatException e) {
                                 System.err.println("Failed to parse amount: " + values[i + 1].trim());
                             }
                         }
                     }
-                    break; // Break the loop once the account is found
+                    break;
                 }
             }
         } catch (IOException e) {
@@ -125,12 +125,10 @@ public class ManagerController {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                System.out.println("Reading line: " + line); // Debug statement
                 String[] values = line.split(",");
-                if (values.length >= 5) { // Adjusted to match minimum expected columns
+                if (values.length >= 5) {
                     String accountNumber = values[1].trim();
                     String username = values[2].trim();
-                    String password = values[3].trim();
                     String status = values[4].trim();
                     double balance = 0.0;
 
@@ -138,19 +136,10 @@ public class ManagerController {
                         balance = Double.parseDouble(values[5].trim());
                     }
 
-                    if ("manager".equalsIgnoreCase(accountType) && "manager".equalsIgnoreCase(values[0].trim())) {
-                        Account managerAccount = new Account(accountNumber, username, status, balance);
-                        accounts.add(managerAccount);
-                        System.out.println("Manager added: " + username + ", Status: " + status + ", Account Number: " + accountNumber);
-                    } else if ("client".equalsIgnoreCase(accountType) && "client".equalsIgnoreCase(values[0].trim())) {
+                    if ("client".equalsIgnoreCase(accountType) && "Client".equalsIgnoreCase(values[0].trim())) {
                         Account clientAccount = new ClientAccount(accountNumber, username, status, balance);
                         accounts.add(clientAccount);
-                        System.out.println("Client added: " + username + ", Status: " + status + ", Account Number: " + accountNumber);
-                    } else {
-                        System.out.println("Skipping unknown account type.");
                     }
-                } else {
-                    System.out.println("Line does not have enough columns: " + line);
                 }
             }
         }
@@ -171,12 +160,60 @@ public class ManagerController {
 
     private Account getAccountDetails(String accountNumber) {
         for (Account account : accounts) {
-            System.out.println("Checking account: " + account.getAccountNumber()); // Debug statement
             if (account.getAccountNumber().equals(accountNumber)) {
                 return account;
             }
         }
         return null;
+    }
+
+    @FXML
+    public void activateOrDeactivate(ActionEvent actionEvent) {
+        String accountNumber = accountNumberTextField.getText().trim();
+        Account account = getAccountDetails(accountNumber);
+
+        if (account == null) {
+            accountNumberLabel.setText("Account not found.");
+            return;
+        }
+
+        String newStatus = "Active".equalsIgnoreCase(account.getStatus()) ? "Inactive" : "Active";
+        account.setStatus(newStatus);
+
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(CSV_FILE_PATH));
+            try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(CSV_FILE_PATH))) {
+                for (String line : lines) {
+                    String[] values = line.split(",");
+                    if (values.length >= 5 && values[1].trim().equals(accountNumber)) {
+                        values[4] = newStatus;
+                        line = String.join(",", values);
+                    }
+                    writer.write(line);
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            accountNumberLabel.setText("Failed to update account status.");
+            return;
+        }
+
+        statusLabel.setText(newStatus);
+        activateOrDeactivate.setText("Active".equalsIgnoreCase(newStatus) ? "Deactivate" : "Activate");
+    }
+
+    public void handleBackButton(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(scene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static class Account {
@@ -204,6 +241,10 @@ public class ManagerController {
             return status;
         }
 
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
         public double getBalance() {
             return balance;
         }
@@ -212,20 +253,6 @@ public class ManagerController {
     public static class ClientAccount extends Account {
         public ClientAccount(String accountNumber, String accountHolderName, String status, double balance) {
             super(accountNumber, accountHolderName, status, balance);
-        }
-    }
-
-    public void handleBackButton(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
-            Parent root = loader.load();
-
-            Scene scene = new Scene(root);
-            Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
