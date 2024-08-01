@@ -8,6 +8,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.*;
 import java.nio.file.Files;
@@ -26,75 +28,75 @@ public class TellerController {
     private Button transferMoneyButton;
     @FXML
     private Label outputLabel;
+    @FXML
+    private VBox transferMoneyBox;
+    @FXML
+    private TextField amountTextField;
+    @FXML
+    private TextField operationTextField;
 
     @FXML
     private void handleTransferMoney(ActionEvent event) {
+        transferMoneyBox.setVisible(true);
+    }
+
+    @FXML
+    private void handleSubmitTransfer(ActionEvent event) {
         String accountNumber = accountNumberTextField.getText().trim();
+        String amountString = amountTextField.getText().trim();
+        String operation = operationTextField.getText().trim().toLowerCase();
+
         if (accountNumber.isEmpty()) {
             showAlert(AlertType.ERROR, "Error", "Please enter an account number.");
             return;
         }
+        if (amountString.isEmpty() || operation.isEmpty()) {
+            showAlert(AlertType.ERROR, "Error", "Please enter both amount and operation.");
+            return;
+        }
 
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Transfer Money");
-        dialog.setHeaderText("Enter amount and operation");
-        dialog.setContentText("Amount and operation (e.g.,'50 Transfer' or '50 Deposit or 50 Loan' or '50 Withdrawal'):");
+        try {
+            double amount = Double.parseDouble(amountString);
 
-
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            String input = result.get().trim(); // Trim the input
-            System.out.println("User input: '" + input + "'"); // Debug: Print the raw input
-            String[] parts = input.split("\\s+"); // Split on one or more spaces
-
-            // Debug: Print the parts
-            System.out.println("Split parts: " + Arrays.toString(parts));
-
-            if (parts.length != 2) {
-                showAlert(AlertType.ERROR, "Error", "Invalid input. Please enter in the format 'amount operation'. Example: '100 Transfer' or '50 Withdrawal'.");
+            // Validate the operation and amount based on the operation type
+            if (operation.equals("transfer") || operation.equals("loan") || operation.equals("deposit")) {
+                if (amount <= 0) {
+                    showAlert(AlertType.ERROR, "Error", "Amount must be positive for Transfer, Loan, or Deposit.");
+                    return;
+                }
+            } else if (operation.equals("withdrawal")) {
+                if (amount >= 0) {
+                    showAlert(AlertType.ERROR, "Error", "Amount must be negative for Withdrawal.");
+                    return;
+                }
+            } else {
+                showAlert(AlertType.ERROR, "Error", "Invalid operation. Please enter 'Transfer', 'Loan', 'Deposit', or 'Withdrawal'.");
                 return;
             }
 
-            try {
-                // Ensure no extra spaces around the amount string
-                String amountString = parts[0].trim(); // Trim the amount string
-                System.out.println("Amount string: '" + amountString + "'"); // Debug: Print the trimmed amount string
+            // Update CSV
+            updateAccountBalance(accountNumber, amount, operation);
 
-                double amount = Double.parseDouble(amountString); // Try to parse the amount
-                String operation = parts[1].trim().toLowerCase();
+            showAlert(AlertType.INFORMATION, "Transfer Successful",
+                    String.format("%s $%.2f for account number: %s",
+                            operation.substring(0, 1).toUpperCase() + operation.substring(1), amount, accountNumber));
 
-                // Validate the operation and amount based on the operation type
-                if (operation.equals("transfer") || operation.equals("loan") || operation.equals("deposit")) {
-                    if (amount <= 0) {
-                        showAlert(AlertType.ERROR, "Error", "Amount must be positive for Transfer, Loan, or Deposit.");
-                        return;
-                    }
-                } else if (operation.equals("withdrawal")) {
-                    if (amount >= 0) {
-                        showAlert(AlertType.ERROR, "Error", "Amount must be negative for Withdrawal.");
-                        return;
-                    }
-                } else {
-                    showAlert(AlertType.ERROR, "Error", "Invalid operation. Please enter 'Transfer', 'Loan', 'Deposit', or 'Withdrawal'.");
-                    return;
-                }
-
-                // Update CSV
-                updateAccountBalance(accountNumber, amount, operation);
-
-                showAlert(AlertType.INFORMATION, "Transfer Successful",
-                        String.format("%s $%.2f for account number: %s",
-                                operation.substring(0, 1).toUpperCase() + operation.substring(1), amount, accountNumber));
-
-            } catch (NumberFormatException e) {
-                // Add debug output for the exception
-                System.err.println("Failed to parse amount: " + e.getMessage());
-                showAlert(AlertType.ERROR, "Error", "Invalid amount entered. Please enter a numeric value for the amount.");
-            } catch (IOException e) {
-                showAlert(AlertType.ERROR, "Error", "Failed to update account balance.");
-                e.printStackTrace();
-            }
+            transferMoneyBox.setVisible(false);
+            amountTextField.clear();
+            operationTextField.clear();
+        } catch (NumberFormatException e) {
+            showAlert(AlertType.ERROR, "Error", "Invalid amount entered. Please enter a numeric value for the amount.");
+        } catch (IOException e) {
+            showAlert(AlertType.ERROR, "Error", "Failed to update account balance.");
+            e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleCancelTransfer(ActionEvent event) {
+        transferMoneyBox.setVisible(false);
+        amountTextField.clear();
+        operationTextField.clear();
     }
 
     @FXML

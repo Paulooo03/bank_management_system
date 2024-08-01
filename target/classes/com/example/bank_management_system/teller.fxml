@@ -7,54 +7,56 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="720" prefWidth="1280" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bank_management_system.TellerController">
     <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#145c9e" height="254.0" layoutX="21.0" layoutY="141.0" opacity="0.51" stroke="WHITE" strokeType="INSIDE" strokeWidth="0.0" width="425.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#87b0d7" height="92.0" layoutX="50.0" layoutY="44.0" opacity="0.51" stroke="WHITE" strokeType="INSIDE" strokeWidth="0.0" width="366.0" />
+        <!-- Existing elements -->
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#145c9e" height="254.0" layoutX="21.0" layoutY="141.0" opacity="0.51" stroke="WHITE" strokeType="INSIDE" strokeWidth="0.0" width="425.0" />
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#87b0d7" height="92.0" layoutX="50.0" layoutY="44.0" opacity="0.51" stroke="WHITE" strokeType="INSIDE" strokeWidth="0.0" width="366.0" />
         <Label layoutX="14.0" layoutY="14.0" text="Teller Dashboard" />
-
-        <!-- TextField for entering Account Number -->
         <TextField fx:id="accountNumberTextField" layoutX="107.0" layoutY="57.0" prefHeight="36.0" prefWidth="234.0" promptText="Enter Account Number" />
-
-        <!-- Combined button to view account details and transaction history -->
         <Button fx:id="viewClientButton" layoutX="107.0" layoutY="100.0" onAction="#handleViewClient" text="View Client">
-         <font>
-            <Font name="Century Gothic" size="12.0" />
-         </font></Button>
-
-        <!-- Button to check account details (this can be removed now) -->
-        <!-- <Button fx:id="checkAccountDetailsButton" layoutX="14.0" layoutY="104.0" text="Check Account Details" onAction="#handleCheckAccountDetails"/> -->
-
-        <!-- Button to transfer money -->
+            <font>
+                <Font name="Century Gothic" size="12.0" />
+            </font>
+        </Button>
         <Button fx:id="transferMoneyButton" layoutX="241.0" layoutY="100.0" onAction="#handleTransferMoney" text="Transfer Money">
-         <font>
-            <Font name="Century Gothic" size="12.0" />
-         </font></Button>
-
-        <!-- Label to display account details -->
+            <font>
+                <Font name="Century Gothic" size="12.0" />
+            </font>
+        </Button>
         <Label fx:id="outputLabel" alignment="CENTER" layoutX="24.0" layoutY="159.0" prefHeight="218.0" prefWidth="418.0" wrapText="true">
-         <font>
-            <Font name="Century Gothic" size="24.0" />
-         </font></Label>
-
-        <!-- TextArea to display transaction history -->
+            <font>
+                <Font name="Century Gothic" size="24.0" />
+            </font>
+        </Label>
         <TextArea fx:id="transactionHistoryTextArea" editable="false" layoutX="450.0" layoutY="44.0" prefHeight="668.0" prefWidth="800.0" wrapText="true">
-         <font>
-            <Font name="Century Gothic" size="20.0" />
-         </font></TextArea>
-
-        <!-- Button to go back -->
+            <font>
+                <Font name="Century Gothic" size="20.0" />
+            </font>
+        </TextArea>
         <Button layoutX="31.0" layoutY="668.0" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="26.0" prefWidth="130.0" text="&lt;&lt;&lt;       Log out">
-         <font>
-            <Font name="Century Gothic" size="12.0" />
-         </font></Button>
-      <ImageView fitHeight="498.0" fitWidth="557.0" layoutX="587.0" layoutY="129.0" opacity="0.16" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@Logo.png" />
-         </image>
-      </ImageView>
+            <font>
+                <Font name="Century Gothic" size="12.0" />
+            </font>
+        </Button>
+        <ImageView fitHeight="498.0" fitWidth="557.0" layoutX="587.0" layoutY="129.0" opacity="0.16" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@Logo.png" />
+            </image>
+        </ImageView>
+
+        <!-- New HBox for transfer money input -->
+        <VBox fx:id="transferMoneyBox" layoutX="38.0" layoutY="424.0" prefHeight="130.0" prefWidth="391.0" spacing="10" visible="false">
+            <children>
+                <TextField fx:id="amountTextField" promptText="Amount" />
+                <TextField fx:id="operationTextField" promptText="Operation (e.g., Transfer)" />
+                <Button layoutX="2.0" layoutY="450.0" onAction="#handleSubmitTransfer" text="Submit" />
+                <Button layoutX="5.0" layoutY="450.0" onAction="#handleCancelTransfer" text="Cancel" />
+            </children>
+        </VBox>
     </children>
 </AnchorPane>
