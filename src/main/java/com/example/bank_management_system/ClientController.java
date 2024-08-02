@@ -1,6 +1,5 @@
 package com.example.bank_management_system;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,16 +8,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClientController {
 
@@ -133,16 +127,10 @@ public class ClientController {
             return date;
         }
 
-        public String getType() {
-            return type;
-        }
-
         public double getAmount() {
             return amount;
         }
 
-        public double getBalance() {
-            return amount; // Adjust this if you want a specific balance calculation
-        }
+        public double getBalance() { return amount;}
     }
 }
