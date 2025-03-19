@@ -62,10 +62,6 @@ public class TransactionHistoryController {
         updateButtonText();
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     private void updateButtonText() {
         if ("Active".equalsIgnoreCase(status)) {
             activateOrDeactivate.setText("Deactivate");
